@@ -1,21 +1,30 @@
 const User = require('../models/User');
+const Project = require('../models/Project');
 
 exports.signup = async (req, res) => {
   try {
     const newUser = new User({
-      ...req.body
+      ...req.body,
     });
+
+    const bookmarks = Project.initBookmarks();
+    const newProject = new Project({
+      user: newUser._id,
+      bookmarks      
+    });
+    newUser.projects = newProject._id;
+
+    await newProject.save();
     await newUser.save();
-  
+
+    res.status(201).json({
+      status: 'success',
+      user: newUser
+    });          
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ err });
+    res.status(500).json({ err });
   }
-
-  res.status(201).json({
-    status: 'success',
-    user: newUser
-  });
 };
 
 exports.login = async (req, res) => {
