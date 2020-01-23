@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 
 const taskSchema = new mongoose.Schema({
   project: {
-    type: mongoose.Schema.ObjectId,
-    ref: 'Project'    
+    type: mongoose.Schema.ObjectId
   },
   isArchived: {
     type: Boolean,
@@ -12,6 +11,10 @@ const taskSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  body: {
+    type: String,
+    minlength: [1, 'Task must contains characters']
   }
 });
 

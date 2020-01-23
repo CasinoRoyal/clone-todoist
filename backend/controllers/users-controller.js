@@ -13,7 +13,6 @@ exports.signup = async (req, res) => {
       bookmarks      
     });
     newUser.projects = newProject._id;
-
     await newProject.save();
     await newUser.save();
 
