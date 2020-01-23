@@ -4,11 +4,11 @@ const bookmarksTitle = ['Inbox', 'Today', 'Next 7 days'];
 
 const projectSchema = new mongoose.Schema({
   user: mongoose.Schema.ObjectId,
-  bookmarks: [{ 
-    title: String,
-    tasks: [{ type: mongoose.Schema.ObjectId, ref: 'Task' }]  
-  }],
-  other: [{ 
+  userProjects: [{
+    isBookmark: {
+      type: Boolean,
+      default: false
+    },
     title: String,
     tasks: [{ type: mongoose.Schema.ObjectId, ref: 'Task' }]  
   }]
@@ -16,7 +16,9 @@ const projectSchema = new mongoose.Schema({
 
 projectSchema.statics.initBookmarks = function() {
    return bookmarksTitle.map(title => ({
-     title
+     title,
+     isBookmark: true,
+     tasks: []
    }))
 }
 

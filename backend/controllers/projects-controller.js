@@ -8,7 +8,7 @@ exports.createProject = async (req, res) => {
       title: req.body.title,
       tasks: []
     }
-    currentProject.other.push(newProjectValues);
+    currentProject.userProjects.push(newProjectValues);
 
     await currentProject.save();
 

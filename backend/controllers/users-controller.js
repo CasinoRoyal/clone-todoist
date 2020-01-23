@@ -10,7 +10,7 @@ exports.signup = async (req, res) => {
     const bookmarks = Project.initBookmarks();
     const newProject = new Project({
       user: newUser._id,
-      bookmarks      
+      userProjects: [...bookmarks]
     });
     newUser.projects = newProject._id;
     await newProject.save();

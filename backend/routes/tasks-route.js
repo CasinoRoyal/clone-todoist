@@ -6,7 +6,7 @@ const { createTask } = require('../controllers/tasks-controller');
 const router = express.Router();
 
 router
-  .route('/:projectId')
+  .route('/:projectTitle')
 //  .get()
   .post(protect, createTask)
 //  .patch()
