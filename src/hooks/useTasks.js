@@ -1,11 +1,25 @@
 import { useState, useEffect } from 'react';
-
-import { firebase } from '../firebase';
+import axios from 'axios';
 
 const useTasks = () => {
   const [tasks, setTasks] = useState([]);
+
+
+  useEffect(() => {
+    const he = async () => {
+      const res = await fetch(`http://127.0.0.1:8000/api/projects`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'mail@ex.com'
+        }
+      });
+      const data = await res.json();
+      console.log(data)
+    }
+    he();
+  }, []);
+
 }
 
-/*
-  Остановился на настройке фаербэйс (38-101)
-*/
+//process.env.REACT_APP_BACKEND_URL

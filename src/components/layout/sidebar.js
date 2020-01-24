@@ -7,19 +7,20 @@ import {
 } from 'react-icons/fa';
 
 const Sidebar = () => {
-
   return(
     <aside className="sidebar" data-testid="sidebar">
       <ul className="sidebar__generic">
-        <li>
+        <li className="inbox" data-testid="inbox">
           <span><FaInbox />&nbsp;</span>
           <span>Inbox</span>
         </li>
-        <li>
+
+        <li className="today" data-testid="today">
           <span><FaRegCalendar />&nbsp;</span>
           <span>Today</span>
         </li>
-        <li>
+        
+        <li className="next_7" data-testid="next_7">
           <span><FaRegCalendarAlt />&nbsp;</span>
           <span>Next 7 days</span>
         </li>

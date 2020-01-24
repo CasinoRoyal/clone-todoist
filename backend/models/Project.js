@@ -20,7 +20,7 @@ projectSchema.statics.initBookmarks = function() {
      isBookmark: true,
      tasks: []
    }))
-}
+};
 
 const Project = mongoose.model('Project', projectSchema);
 

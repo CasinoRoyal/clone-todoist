@@ -1,5 +1,21 @@
 const Project = require('../models/Project');
-//const User = require('../models/User');
+
+exports.getAllUsersProjects = async (req, res) => {
+  try {
+    const projects = await Project
+      .findOne({ _id: req.userProjects._id })
+      .populate({path: 'userProjects.tasks'});
+
+    res.status(200).json({
+      status: 'success',
+      length: projects.length,
+      projects: projects.userProjects
+    })
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ msg: err })
+  }
+};
 
 exports.createProject = async (req, res) => {
   try {
