@@ -2,11 +2,12 @@ const User = require('../models/User');
 
 module.exports = async (req, res, next) => {
   const { authorization } = req.headers;
-  const projects = await User
+  const user = await User
     .findOne({ email: authorization })
-    .select('projects')
+    .select('-password')
     .populate({path: 'projects'})
-
-  req.userProjects = projects.projects;
+  req.userProjects = user.projects;
+  req.user = user;
+  
   next();
 };

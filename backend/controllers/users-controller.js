@@ -1,6 +1,19 @@
 const User = require('../models/User');
 const Project = require('../models/Project');
 
+exports.getCurrentUser = async (req, res) => {
+  const user = req.user;
+
+  if (!user) {
+    return res.status(401).json({ msg: 'Fail'})
+  }
+
+  res.status(200).json({
+    status: 'success', 
+    user 
+  });
+};
+
 exports.signup = async (req, res) => {
   try {
     const newUser = new User({
