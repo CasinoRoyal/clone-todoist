@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const isEmail = require('validator/lib/isEmail');
+const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -18,10 +19,30 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true    
+    required: [true, 'Please enter your password']    
+  },
+  confirmPassword: {
+    type: String,
+    validate: {
+      validator(confirmPassword) {
+        return confirmPassword === this.password
+      },
+      messsage: 'Incorrect password'
+    }
   },
   projects: { type: mongoose.Schema.ObjectId, ref: 'Project' }
 });
+
+userSchema.pre('save', async function(next) {
+  this.password = await bcrypt.hash(this.password, 12);
+  this.confirmPassword = undefined;
+
+  next();
+});
+
+userSchema.methods.isCorrectPassword = async function(confirmPass, userPass) {
+  return await bcrypt.compare(confirmPass, userPass);
+};
 
 const User = mongoose.model('User', userSchema);
 

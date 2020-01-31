@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const Project = require('../models/Project');
+const { createAuthToken } = require('../utils/token-creator');
 
 exports.getCurrentUser = async (req, res) => {
   const user = req.user;
@@ -29,10 +30,8 @@ exports.signup = async (req, res) => {
     await newProject.save();
     await newUser.save();
 
-    res.status(201).json({
-      status: 'success',
-      user: newUser
-    });          
+    createAuthToken(newUser, 201, req, res);
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ err });
@@ -40,15 +39,17 @@ exports.signup = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
 
-  const user = await User.findOne({ email: req.body.email });
+    if (!user || !(await user.isCorrectPassword(req.body.password, user.password))) {
+      return res.status(500).json({ msg: 'incorrect credentials' }); 
+    }
+    
+    createAuthToken(user, 200, req, res);
 
-  if (!user) {
-    return res.status(500).json({ msg: 'incorrect credentials' }); 
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ err });
   }
-
-  res.status(200).json({
-    status: 'success',
-    user
-  });
 };

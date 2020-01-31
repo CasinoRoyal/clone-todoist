@@ -1,4 +1,3 @@
-
 const express = require('express');
 
 const { signup, login, getCurrentUser } = require('../controllers/users-controller');
