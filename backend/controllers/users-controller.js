@@ -30,7 +30,14 @@ exports.signup = async (req, res) => {
     await newProject.save();
     await newUser.save();
 
-    createAuthToken(newUser, 201, req, res);
+    const user = { 
+      _id: newUser._id,
+      username: newUser.username,
+      email: newUser.email,
+      projects: newUser.projects 
+    };
+
+    createAuthToken(user, 201, req, res);
 
   } catch (err) {
     console.error(err);
@@ -46,7 +53,14 @@ exports.login = async (req, res) => {
       return res.status(500).json({ msg: 'incorrect credentials' }); 
     }
     
-    createAuthToken(user, 200, req, res);
+    const currentUser = {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      projects: user.projects 
+    };
+
+    createAuthToken(currentUser, 200, req, res);
 
   } catch (err) {
     console.error(err);

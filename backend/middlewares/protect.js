@@ -20,6 +20,10 @@ module.exports = async (req, res, next) => {
       process.env.JWT_SECRET_KEY
     );
 
+  if (!decodedToken) {
+    return res.status(400).json({ msg: 'Invalid token' })
+  }
+
   const user = await User
     .findOne({ _id: decodedToken.id })
     .select('-password')

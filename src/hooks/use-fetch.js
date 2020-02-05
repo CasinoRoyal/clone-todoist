@@ -1,29 +1,37 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
+import useLocalStorage from './use-local-storage';
+
 const useFetch = (url) => {
+  const [requestMethod, setRequestMethod] = useState('');
   const [response, setResponse] = useState(null);
-  const [options, setOptions] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [options, setOptions] = useState(null);
+  const [isLoading, setIsLoading] = useState({});
   const [error, setError] = useState(null);
   const [value] = useLocalStorage('user');
 
-  const doFetch = useCallback((options) => {
+  const doFetch = useCallback((options, method = 'GET') => {
+    setRequestMethod(method);
     setOptions(options);
     setIsLoading(true);
   }, []);
 
   useEffect(() => {
     if(!isLoading) return;
-
     const fetchingOptions = {
-      ...options,
+      data: {...options},
       headers: {
-        authorization: value ? value : '';
-      }
+        authorization: value ? `Bearer ${value}` : ''
+      },
+      withCredentials: true
     };
 
-    axios(`${process.env.REACT_APP_BACKEND_URL}/${url}`, fetchingOptions)
+    axios({
+      method: requestMethod, 
+      url: `http://127.0.0.1:8000/api/${url}`, 
+      ...fetchingOptions
+    })
       .then(res => {
         setResponse(res.data);
         setIsLoading(false);
@@ -33,7 +41,7 @@ const useFetch = (url) => {
         setIsLoading(false)
       });
 
-  }, [url, isLoading]);
+  }, [url, isLoading, options, value, requestMethod]);
 
   return [{response, isLoading, error}, doFetch];
 };

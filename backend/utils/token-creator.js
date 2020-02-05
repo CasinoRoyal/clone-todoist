@@ -10,7 +10,7 @@ const generateToken = (id) => {
 
 exports.createAuthToken = (user, statusCode, req, res) => {
   const token = generateToken(user._id);
-  const tokenOptions = { maxAge: 1000*60*60 };
+  const tokenOptions = { maxAge: 1000*60*60, httpOnly: true };
 
   res.cookie('token', token, tokenOptions);
   
