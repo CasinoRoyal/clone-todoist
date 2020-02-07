@@ -11,7 +11,7 @@ const Welcome = () => {
   const [password, setPassword] = useState('');
   const [isLogin, setIsLogin] = useState(false);
   const requestUrl = isLogin ? 'users/login' : 'users/signup';
-  const [{response, isLoading, error}, doFetch] = useFetch(requestUrl);
+  const [{response, isLoading}, doFetch] = useFetch(requestUrl);
 
   useEffect(() => {
     if (response) {

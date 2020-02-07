@@ -9,11 +9,9 @@ const generateToken = (id) => {
 };
 
 exports.createAuthToken = (user, statusCode, req, res) => {
+  // const tokenOptions = { maxAge: 1000*60*60, httpOnly: true };
+  // res.cookie('token', token, tokenOptions);
   const token = generateToken(user._id);
-  const tokenOptions = { maxAge: 1000*60*60, httpOnly: true };
-
-  res.cookie('token', token, tokenOptions);
-  
   return res.status(statusCode).json({
     status: 'success',
     token,

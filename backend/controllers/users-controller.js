@@ -29,7 +29,7 @@ exports.signup = async (req, res) => {
     newUser.projects = newProject._id;
     await newProject.save();
     await newUser.save();
-
+    console.log('SIGNUP ' + newUser);
     const user = { 
       _id: newUser._id,
       username: newUser.username,
@@ -47,8 +47,11 @@ exports.signup = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.body.email });
+    const user = await User
+      .findOne({ email: req.body.email })
+      .populate({path: 'projects'});
 
+      console.log('LOGIN ' + user);
     if (!user || !(await user.isCorrectPassword(req.body.password, user.password))) {
       return res.status(500).json({ msg: 'incorrect credentials' }); 
     }

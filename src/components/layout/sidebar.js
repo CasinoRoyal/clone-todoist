@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { 
   FaChevronDown, 
   FaInbox, 
   FaRegCalendarAlt, 
   FaRegCalendar 
 } from 'react-icons/fa';
+import userContext from '../../contexts/user-context';
 
 const Sidebar = () => {
+  const { projects } = useContext(userContext);
+  console.log(projects)
+
   return(
     <aside className="sidebar" data-testid="sidebar">
       <ul className="sidebar__generic">
