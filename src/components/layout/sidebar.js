@@ -1,15 +1,53 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect, Fragment } from 'react';
 import { 
   FaChevronDown, 
   FaInbox, 
   FaRegCalendarAlt, 
   FaRegCalendar 
 } from 'react-icons/fa';
-import userContext from '../../contexts/user-context';
+
+import { userContext } from '../../contexts/user-context';
+import { types } from '../../contexts/user-reducer';
+import useFetch from '../../hooks/use-fetch';
+import ProjectsList from '../projects-list';
 
 const Sidebar = () => {
-  const { projects } = useContext(userContext);
-  console.log(projects)
+  const { state, dispatch } = useContext(userContext);
+  const [newTask, setNewTask] = useState(false);
+  const [taskTitle, setTaskTitle] = useState('');
+  const [{ response, isLoading }, doFetch] = useFetch('projects');
+  const userProjects = state.projects.filter((p) => p.isBookmark === false );
+
+  useEffect(() => {
+    if (response) {
+      setNewTask(false);
+      setTaskTitle('');
+      dispatch({ 
+        type: types.ADD_PROJECT, 
+        payload: response.project.userProjects 
+      });
+    }
+  }, [response, setNewTask, dispatch])
+
+  const handleAddProject = (e) => {
+    if (!taskTitle.trim().length) {
+      return console.info('Must contains at least one character')
+    }
+    
+    const options = {
+      title: taskTitle
+    }
+    doFetch(options, 'POST');
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.keyCode === 13) {
+     handleAddProject();
+    };
+    if (e.keyCode === 27) {
+      setNewTask(false);
+    };
+  };
 
   return(
     <aside className="sidebar" data-testid="sidebar">
@@ -34,7 +72,25 @@ const Sidebar = () => {
           <FaChevronDown />
           <h2>Projects</h2>
         </span>
-        <ul className="sidebar__projects"></ul>
+        <ProjectsList projects={userProjects} />
+
+        {newTask && (
+          <Fragment>
+            <input 
+              type="text" 
+              value={taskTitle}
+              onChange={(e) => setTaskTitle(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
+            <button onClick={handleAddProject}>
+              {isLoading ? 'Wait' : 'Add'}
+            </button>
+          </Fragment>
+        )}
+        
+        <button onClick={() => setNewTask(!newTask)}>
+          {newTask ? 'Cancel' : '+'}
+        </button>
       </div>
     </aside>
   );

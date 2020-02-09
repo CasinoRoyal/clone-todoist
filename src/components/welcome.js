@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Redirect } from 'react-router-dom';
 
 import useFetch from '../hooks/use-fetch';
-import useLocalStorage from '../hooks/use-local-storage';
+import { userContext } from '../contexts/user-context';
+import { types } from '../contexts/user-reducer';
 
 const Welcome = () => {
-  const [value, setValue] = useLocalStorage('user');
+  const { state, dispatch } = useContext(userContext);
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -15,11 +16,19 @@ const Welcome = () => {
 
   useEffect(() => {
     if (response) {
-      setValue(JSON.stringify(response.user));
+      console.log(response)
+      dispatch({
+        type: types.LOGIN_USER,
+        payload: { 
+          token: response.token, 
+          user: response.user, 
+          projects: response.user.projects.userProjects 
+        }
+      });
     };
-  }, [response, setValue])
+  }, [response, dispatch])
 
-  if (value && value.length !== 0) {
+  if (state && state.isLogged) {
     return <Redirect to='/' />
   };
 

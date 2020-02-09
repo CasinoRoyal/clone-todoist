@@ -1,11 +1,15 @@
-import { createContext } from 'react';
+import React, { createContext, useReducer } from 'react';
+import { reducer, initialState } from './user-reducer';
 
-const userContext = createContext({
-  isLogged: false,
-  token: null,
-  user: null,
-  projects: null,
-  logout: () => {}
-});
+export const userContext = createContext(initialState);
 
-export default userContext;
+
+export const StateProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  return(
+    <userContext.Provider value={{state, dispatch}}>
+      {children}
+    </userContext.Provider>
+  );
+};

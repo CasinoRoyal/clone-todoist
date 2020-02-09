@@ -29,14 +29,11 @@ exports.signup = async (req, res) => {
     newUser.projects = newProject._id;
     await newProject.save();
     await newUser.save();
-    console.log('SIGNUP ' + newUser);
-    const user = { 
-      _id: newUser._id,
-      username: newUser.username,
-      email: newUser.email,
-      projects: newUser.projects 
-    };
 
+    const user = await User.findOne({ _id: newUser._id })
+      .select('-password')
+      .populate({ path: 'projects'});
+      
     createAuthToken(user, 201, req, res);
 
   } catch (err) {
