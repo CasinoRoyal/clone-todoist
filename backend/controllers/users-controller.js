@@ -30,10 +30,11 @@ exports.signup = async (req, res) => {
     await newProject.save();
     await newUser.save();
 
-    const user = await User.findOne({ _id: newUser._id })
-      .select('-password')
-      .populate({ path: 'projects'});
-      
+    const user = {
+      _id: newUser._id,
+      username: newUser.username      
+    }
+
     createAuthToken(user, 201, req, res);
 
   } catch (err) {
@@ -44,20 +45,15 @@ exports.signup = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
-    const user = await User
-      .findOne({ email: req.body.email })
-      .populate({path: 'projects'});
+    const user = await User.findOne({ email: req.body.email });
 
-      console.log('LOGIN ' + user);
     if (!user || !(await user.isCorrectPassword(req.body.password, user.password))) {
       return res.status(500).json({ msg: 'incorrect credentials' }); 
     }
     
     const currentUser = {
       _id: user._id,
-      username: user.username,
-      email: user.email,
-      projects: user.projects 
+      username: user.username
     };
 
     createAuthToken(currentUser, 200, req, res);

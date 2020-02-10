@@ -4,8 +4,10 @@ import { Redirect } from 'react-router-dom';
 import useFetch from '../hooks/use-fetch';
 import { userContext } from '../contexts/user-context';
 import { types } from '../contexts/user-reducer';
+import useLocalStorage from '../hooks/use-local-storage';
 
 const Welcome = () => {
+  const [, setValue] = useLocalStorage('token');
   const { state, dispatch } = useContext(userContext);
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -16,17 +18,17 @@ const Welcome = () => {
 
   useEffect(() => {
     if (response) {
-      console.log(response)
+      setValue(JSON.stringify(response));
+
       dispatch({
         type: types.LOGIN_USER,
         payload: { 
           token: response.token, 
-          user: response.user, 
-          projects: response.user.projects.userProjects 
+          user: response.user
         }
       });
     };
-  }, [response, dispatch])
+  }, [response, dispatch, setValue])
 
   if (state && state.isLogged) {
     return <Redirect to='/' />

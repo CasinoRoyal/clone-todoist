@@ -1,16 +1,33 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 
 import Header from './components/layout/header';
 import Content from './components/layout/content';
 import { userContext } from './contexts/user-context';
+import { types } from './contexts/user-reducer';
+import useLocalStorage  from './hooks/use-local-storage';
 
 function App() {
-  const { state } = useContext(userContext);
-  console.log(state)
+  const [value] = useLocalStorage('token');
+  const { state, dispatch } = useContext(userContext);
+
+  useEffect(() => {
+    if (value && !state.isLogged) {
+      const userData = JSON.parse(value);
+      dispatch({ 
+        type: types.LOGIN_USER, 
+        payload: {
+          token: userData.token,
+          user: userData.user
+        }
+      });
+    }
+  }, [value, state, dispatch])
+
   if (!state || !state.isLogged) {
     return <Redirect to='/welcome' />
   }
+
 
   return (
     <div className="App">

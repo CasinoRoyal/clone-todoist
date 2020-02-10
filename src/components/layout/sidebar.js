@@ -12,22 +12,43 @@ import useFetch from '../../hooks/use-fetch';
 import ProjectsList from '../projects-list';
 
 const Sidebar = () => {
-  const { state, dispatch } = useContext(userContext);
+  const { dispatch } = useContext(userContext);
   const [newTask, setNewTask] = useState(false);
   const [taskTitle, setTaskTitle] = useState('');
-  const [{ response, isLoading }, doFetch] = useFetch('projects');
-  const userProjects = state.projects.filter((p) => p.isBookmark === false );
+  const [
+    { 
+      response: newProjectResponse, 
+      isLoading: newProjectIsLoading 
+    }, 
+    fetchNewProject
+  ] = useFetch('projects');
+  const [
+    { 
+      response: allProjectsResponse, 
+      isLoading: allProjectsIsLoading
+    }, 
+    fetchAllProjects
+  ] = useFetch('projects');
 
   useEffect(() => {
-    if (response) {
+    fetchAllProjects(null, 'GET');
+  }, [fetchAllProjects, newProjectResponse]);
+
+  useEffect(() => {
+    if (newProjectResponse) {
       setNewTask(false);
       setTaskTitle('');
       dispatch({ 
-        type: types.ADD_PROJECT, 
-        payload: response.project.userProjects 
+        type: types.ADD_PROJECT
       });
     }
-  }, [response, setNewTask, dispatch])
+  }, [newProjectResponse, setNewTask, dispatch])
+
+  const userProjects = allProjectsResponse && (
+    allProjectsResponse.projects.filter((p) => { 
+      return p.isBookmark === false;
+    })
+  );
 
   const handleAddProject = (e) => {
     if (!taskTitle.trim().length) {
@@ -37,7 +58,8 @@ const Sidebar = () => {
     const options = {
       title: taskTitle
     }
-    doFetch(options, 'POST');
+
+    fetchNewProject(options, 'POST');
   };
 
   const handleKeyDown = (e) => {
@@ -72,7 +94,10 @@ const Sidebar = () => {
           <FaChevronDown />
           <h2>Projects</h2>
         </span>
-        <ProjectsList projects={userProjects} />
+        
+        {allProjectsIsLoading && <h2>LOADING...</h2>}
+
+        {allProjectsResponse && <ProjectsList projects={userProjects} />}
 
         {newTask && (
           <Fragment>
@@ -83,7 +108,7 @@ const Sidebar = () => {
               onKeyDown={handleKeyDown}
             />
             <button onClick={handleAddProject}>
-              {isLoading ? 'Wait' : 'Add'}
+              {newProjectIsLoading ? 'Wait' : 'Add'}
             </button>
           </Fragment>
         )}
