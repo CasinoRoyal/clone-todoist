@@ -45,11 +45,14 @@ const Welcome = () => {
   return(
     <div className="welcome">
       <h2>Welcome page</h2>
+      
+      <div className="welcome__box">
+        <span>{isLogin ? 'Sign up, it is free' : 'Have an account?'}</span>
+        <a onClick={() => setIsLogin(!isLogin)}>
+          {isLogin ? 'Register' : 'Log in'}
+        </a>
+      </div>
 
-      <button onClick={() => setIsLogin(!isLogin)}>
-        {isLogin ? 'Register' : 'Click for enter'}
-      </button>
-      <small>{isLogin ? 'Sign up, it is free' : 'Have an account?'}</small>
       <form onSubmit={handleSubmit}>
         {!isLogin && (
           <input

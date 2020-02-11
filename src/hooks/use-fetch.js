@@ -21,7 +21,6 @@ const useFetch = (url) => {
 
   useEffect(() => {
     if(!isLoading) return;
-    
     const fetchingOptions = {
       data: {...options},
       headers: {
@@ -40,7 +39,8 @@ const useFetch = (url) => {
         setIsLoading(false);
       })
       .catch(err => {
-        setError(err.response.data);
+        console.dir(err)
+        setError(err.message);
         setIsLoading(false)
       });
 

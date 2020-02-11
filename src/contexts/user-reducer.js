@@ -1,7 +1,8 @@
 export const initialState = {
   isLogged: false,
   token: null,
-  user: null
+  user: null,
+  currentProject: null
 }
 
 export const types = {
@@ -9,8 +10,10 @@ export const types = {
   LOGOUT_USER: 'LOGOUT_USER',
   SET_TOKEN: 'SET_TOKEN',
   ADD_PROJECT: 'ADD_PROJECT',
+  SET_PROJECT: 'SET_PROJECT',
   EDIT_PROJECT: 'EDIT_PROJECT',
-  REMOVE_PROJECT: 'REMOVE_PROJECT'
+  REMOVE_PROJECT: 'REMOVE_PROJECT',
+  ADD_TASK: 'ADD_TASK'
 }
 
 export const reducer = (state = initialState, action) => {
@@ -29,6 +32,13 @@ export const reducer = (state = initialState, action) => {
         token: null,
         user: null
       }
+    case types.SET_PROJECT:
+      return {
+        ...state,
+        currentProject: action.payload
+      }
+    case types.ADD_TASK:
+      return { ...state }
     case types.ADD_PROJECT:
     default: 
       return state;
