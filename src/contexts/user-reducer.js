@@ -2,7 +2,9 @@ export const initialState = {
   isLogged: false,
   token: null,
   user: null,
-  currentProject: null
+  currentProject: null,
+  isEdit: false,
+  currentTask: null
 }
 
 export const types = {
@@ -13,7 +15,10 @@ export const types = {
   SET_PROJECT: 'SET_PROJECT',
   EDIT_PROJECT: 'EDIT_PROJECT',
   REMOVE_PROJECT: 'REMOVE_PROJECT',
-  ADD_TASK: 'ADD_TASK'
+  ADD_TASK: 'ADD_TASK',
+  TOGGLE_EDIT_TASK: 'TOGGLE_EDIT_TASK',
+  TOGGLE_TASK_DETAILS: 'TOGGLE_TASK_DETAILS',
+  SET_CURRENT_TASK: 'SET_CURRENT_TASK'
 }
 
 export const reducer = (state = initialState, action) => {
@@ -39,6 +44,21 @@ export const reducer = (state = initialState, action) => {
       }
     case types.ADD_TASK:
       return { ...state }
+    case types.TOGGLE_EDIT_TASK:
+      return { 
+        ...state,
+        isEdit: !state.isEdit
+      }
+    case types.TOGGLE_TASK_DETAILS:
+      return { 
+        ...state,
+        isOpenTaskDetails: !state.isOpenTaskDetails
+      }
+    case types.SET_CURRENT_TASK:
+      return {
+        ...state,
+        currentTask: action.payload
+      }
     case types.ADD_PROJECT:
     default: 
       return state;

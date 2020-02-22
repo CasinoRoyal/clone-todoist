@@ -1,7 +1,7 @@
 import React from 'react';
 
 import preloader from './preloader.svg';
-import Modal from './modal';
+// import Modal from './modal';
 
 const Spinner = () => {
   return(
