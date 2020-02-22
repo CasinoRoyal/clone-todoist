@@ -10,6 +10,7 @@ import { userContext } from '../../contexts/user-context';
 import { types } from '../../contexts/user-reducer';
 import useFetch from '../../hooks/use-fetch';
 import ProjectsList from '../projects-list';
+import Spinner from './spinner';
 
 const Sidebar = () => {
   const { dispatch } = useContext(userContext);
@@ -95,7 +96,7 @@ const Sidebar = () => {
           <h2>Projects</h2>
         </span>
         
-        {allProjectsIsLoading && <h2>LOADING...</h2>}
+        {allProjectsIsLoading && <Spinner />}
 
         {allProjectsResponse && <ProjectsList projects={userProjects} />}
 

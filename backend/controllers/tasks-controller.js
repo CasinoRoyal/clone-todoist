@@ -27,7 +27,34 @@ exports.createTask = async (req, res) => {
   }
 };
 
-exports.updateTask = async (req, res) => {};
+exports.archiveTask = async (req, res) => {
+  const { _id } = req.body;
+
+  const task = await Task.findOne({ _id });
+
+  if (!task) {
+    return res.status(404).json({ msg: 'Task not found' });
+  }
+
+  task.isArchived = !task.isArchived;
+  await task.save();
+  
+  res.status(200).json({task})
+};
+
+
+exports.updateTask = async (req, res) => {
+  const { _id, taskBody } = req.body;
+
+  const task = await Task.findOneAndUpdate({ _id }, { body: taskBody });
+
+  if (!task) {
+    return res.status(404).json({ msg: 'Task not found' });
+  }
+
+  res.status(200).json({task})
+};
+
 exports.deleteTask = async (req, res) => {};
 
 exports.getAllTaskFromProject = async (req, res) => {
@@ -38,7 +65,7 @@ exports.getAllTaskFromProject = async (req, res) => {
 
     if (!tasks) {
       return res.status(400).json({ msg: 'Project was deleted' });
-    };
+    }
 
     return res.status(200).json({
       status: 'success',

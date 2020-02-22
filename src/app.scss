@@ -461,7 +461,7 @@ header {
       -ms-flex-align: center;
           align-items: center;
   grid-template-columns: 1fr auto;
-  max-width: 922px;
+  max-width: 1200px;
   margin: auto;
 }
 
@@ -528,6 +528,10 @@ header {
         display: block;
         border: 1px solid gray;
         border-radius: 16px;
+      }
+
+      .checkbox--active {
+        background-color: purple;
       }
     }
   }
@@ -784,5 +788,76 @@ header {
     padding: 5px;
     color: #db4c3f;
     font-weight: bold;
+  }
+}
+
+.spinner {
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+  display: flex;
+  margin: auto;
+}
+
+.modal {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, .2);
+  transition: all .2s ease;
+}
+
+.task__container {
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+  display: flex;
+  width: 100%;
+}
+
+.task__content {
+  resize: none;
+
+  overflow: hidden;
+  border: none;
+  padding: 0 10px;
+  width: 95%;
+
+  &--edit {
+    font-style: italic;
+  }
+}
+
+.task__cancel {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+
+  & > svg {
+    opacity: .2;
+    transition: opacity .3s ease;    
+  }
+
+  &:hover > svg {
+    opacity: 1;
+    fill: #db4c3f;    
+  }
+}
+
+.task__btn {
+  border: none;
+  background-color: transparent;
+  opacity: .3;
+  transition: opacity .2s ease;
+
+  &:hover {
+    cursor: pointer;
+    opacity: 1;
+  }
+
+  &--edit {
+    margin-left: auto;
   }
 }

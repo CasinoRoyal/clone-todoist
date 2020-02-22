@@ -1,15 +1,23 @@
 import React from 'react';
+import axios from 'axios';
 
-const Checkbox = () => {
-  const archiveTask = () => {};
+import useFetch from '../../hooks/use-fetch';
+
+const Checkbox = ({ id }) => {
+  const [{ response }, doFetch] = useFetch('tasks');
+
+  const archiveTask = async (id) => {
+    await doFetch({ _id: id }, 'PATCH')
+  };
+  const isArchived = response && response.task.isArchived && 'checkbox--active';
 
   return (
     <div 
       className="checkbox-holder" 
       data-testid="checkbox-action"
-      onClick={() => archiveTask}
+      onClick={() => archiveTask(id)}
     >
-    <span className="checkbox" />
+      <span className={`checkbox ${isArchived}`} />
     </div>
   );
 };

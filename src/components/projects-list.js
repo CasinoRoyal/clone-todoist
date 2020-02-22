@@ -20,6 +20,7 @@ const ProjectsList = ({ projects }) => {
               key={project._id} 
               data-projectid={project._id} 
               onClick={handleProjectClick}
+              className="sidebar__project"
             >
               {project.title}
             </li>

@@ -3,11 +3,13 @@ import React, { Fragment, useContext, useState, useEffect } from 'react';
 import useFetch from '../hooks/use-fetch';
 import { types } from '../contexts/user-reducer';
 import { userContext }  from '../contexts/user-context';
+import Task from './task';
 
 const TasksList = ({ tasks }) => {
   const [task, setTask] = useState('');
   const { state, dispatch } = useContext(userContext);
   const [{response, isLoading}, doFetch] = useFetch('tasks');
+  let tasksListContent;
 
   useEffect(() => {
     if (response && !isLoading) {
@@ -15,6 +17,19 @@ const TasksList = ({ tasks }) => {
       setTask('');
     }
   }, [response, isLoading]);
+
+  if (!tasks.length) {
+    tasksListContent = <h2 className="no-task">No tasks yet</h2>;
+  } else {
+    tasksListContent = (
+      <ul className='tasks__list'>
+        {tasks.map(task => {
+          return <Task key={task._id} task={task} />        
+        })}
+        
+      </ul>
+    );
+  }
 
   const handleAddTask = () => {
     const options = {
@@ -24,15 +39,9 @@ const TasksList = ({ tasks }) => {
     doFetch(options, 'POST');
   };
 
-  const tasksRenderer = !tasks.length ? <li>'No tasks yet'</li> : (
-    tasks.map((task) => <li key={task._id}>{task.body}</li> )
-  );
-
   return(
     <Fragment>
-      <ul className='tasks__list'>
-        {tasksRenderer}        
-      </ul>
+      {tasksListContent}
       <input type="text" value={task} onChange={(e) => setTask(e.target.value)} />
       <button onClick={handleAddTask}>Add task</button>
     </Fragment>
