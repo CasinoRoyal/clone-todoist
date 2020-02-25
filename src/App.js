@@ -8,7 +8,7 @@ import { types } from './contexts/user-reducer';
 import useLocalStorage  from './hooks/use-local-storage';
 
 function App() {
-  const [value] = useLocalStorage('token');
+  const [value,,removeValue] = useLocalStorage('token');
   const { state, dispatch } = useContext(userContext);
 
   useEffect(() => {
@@ -21,12 +21,15 @@ function App() {
 
   useEffect(() => {
     if (value && !state.isLogged) {
-      const userData = JSON.parse(value);
+      if (value.createAt < Date.now()) {
+        return removeValue();
+      }
+
       dispatch({ 
         type: types.LOGIN_USER, 
         payload: {
-          token: userData.token,
-          user: userData.user
+          token: value.token,
+          user: value.user
         }
       });
     }

@@ -11,7 +11,8 @@ const useLocalStorage = (key, initialValue = '') => {
 
   const removeValue = () => localStorage.removeItem(key);
 
-  return [value, setValue, removeValue];
+  const storage = value ? JSON.parse(value) : '';
+  return [storage, setValue, removeValue];
 };
 
 export default useLocalStorage;
