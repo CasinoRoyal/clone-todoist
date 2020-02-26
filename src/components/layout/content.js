@@ -8,7 +8,8 @@ import { userContext } from '../../contexts/user-context'
 
 const Content = () => {
   const { state } = useContext(userContext);
-  const [{response, isLoading}, doFetch] = useFetch(`tasks/${state.currentProject}`);
+  const url = state.currentProject && state.currentProject.projectId; 
+  const [{response, isLoading}, doFetch] = useFetch(`tasks/${url}`);
 
   useEffect(() => {
     if (state && state.currentProject) {
@@ -21,7 +22,12 @@ const Content = () => {
       <Sidebar />
 
       <div className="tasks">
-        {response && <TasksList tasks={response.tasks} />}
+        {response && 
+          <TasksList 
+            tasks={response.tasks} 
+            title={state.currentProject.title} 
+          />
+        }
       </div>
 
       {state.currentTask && <TaskDetails task={state.currentTask}/>}

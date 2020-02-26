@@ -6,7 +6,6 @@ import { userContext } from '../contexts/user-context';
 import useFetch from '../hooks/use-fetch';
 
 const TaskDetails = ({ task }) => {
-  console.log(task)
   const { dispatch } = useContext(userContext);
   const [taskBody, setTaskBody] = useState(task.body);
   const [cacheTaskBody, setCacheTaskBody] = useState(task.body);

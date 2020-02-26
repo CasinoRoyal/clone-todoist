@@ -5,7 +5,9 @@ const {
   createTask, 
   archiveTask, 
   getAllTaskFromProject,
-  updateTask
+  updateTask,
+  deleteTask,
+  bindTaskToAnotherProject
 } = require('../controllers/tasks-controller');
 
 const router = express.Router();
@@ -15,7 +17,11 @@ router
   .post(protect, createTask)
   .patch(protect, archiveTask)
   .put(protect, updateTask)
+  .delete(protect, deleteTask)
 
-router.get('/:projectId', protect, getAllTaskFromProject);
+router
+  .route('/:projectId')
+  .get(protect, getAllTaskFromProject)
+  .post(protect, bindTaskToAnotherProject)
 
 module.exports = router;

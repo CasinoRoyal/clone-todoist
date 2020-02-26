@@ -5,16 +5,11 @@ import Checkbox from './layout/checkbox';
 import { userContext } from '../contexts/user-context';
 import { types } from '../contexts/user-reducer';
 
-const Task = ({ task }) => {
+const Task = ({ task, onDelete }) => {
   const { dispatch } = useContext(userContext);
   
   const handleClickTask = () => {
-    dispatch({type: types.SET_CURRENT_TASK, payload: null})
     dispatch({type: types.SET_CURRENT_TASK, payload: task})
-  }
-
-  const handleDeleteTask = () => {
-    console.info('delete!')
   }
 
   return (
@@ -25,7 +20,7 @@ const Task = ({ task }) => {
           {task.body}
         </span>
 
-        <button className="task__btn" onClick={handleDeleteTask}>
+        <button className="task__btn" onClick={() => onDelete(task._id)}>
           <FaTrash />
         </button>    
       </div>

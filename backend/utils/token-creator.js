@@ -14,6 +14,6 @@ exports.createAuthToken = (user, statusCode, req, res) => {
     status: 'success',
     token,
     user,
-    creatAt: Date.now() + 1000*60*60*24
+    createAt: Date.now() + 1000*60*60*24
   });
 };
