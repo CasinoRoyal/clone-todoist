@@ -1,21 +1,32 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect } from 'react';
 
 import Sidebar from './sidebar';
 import TasksList from '../tasks-list';
 import TaskDetails from '../task-details';
 import useFetch from '../../hooks/use-fetch';
-import { userContext } from '../../contexts/user-context'
+import useProjects from '../../hooks/use-projects';
+import useTasks from '../../hooks/use-tasks';
+import { types } from '../../contexts/tasks-reducer';
 
 const Content = () => {
-  const { state } = useContext(userContext);
-  const url = state.currentProject && state.currentProject.projectId; 
+  const { state: tasksState, dispatch } = useTasks();
+  const { state: projectsState } = useProjects();
+  const url = projectsState.currentProject && projectsState.currentProject.projectId; 
   const [{response, isLoading}, doFetch] = useFetch(`tasks/${url}`);
 
   useEffect(() => {
-    if (state && state.currentProject) {
+    document.addEventListener('keydown', (e) => {
+      if (e.keyCode === 27 && tasksState.currentTask) {
+        dispatch({ type: types.SET_CURRENT_TASK, payload: null });
+      }
+    })
+  }, [tasksState.currentTask, dispatch])
+
+  useEffect(() => {
+    if (projectsState && projectsState.currentProject) {
       doFetch(null, 'GET');
     }
-  }, [state, doFetch, state.isEditTask]);
+  }, [projectsState, doFetch, tasksState.isEditTask]);
 
   return(
     <section className='content'>
@@ -23,14 +34,11 @@ const Content = () => {
 
       <div className="tasks">
         {response && 
-          <TasksList 
-            tasks={response.tasks} 
-            title={state.currentProject.title} 
-          />
+          <TasksList tasks={response.tasks} />
         }
       </div>
 
-      {state.currentTask && <TaskDetails task={state.currentTask}/>}
+      {tasksState.currentTask && <TaskDetails />}
     </section>
   );
 };

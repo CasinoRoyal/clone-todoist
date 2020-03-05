@@ -6,8 +6,8 @@ import React, { useState, useContext, useEffect, Fragment } from 'react';
 //   FaRegCalendar 
 // } from 'react-icons/fa';
 
-import { userContext } from '../../contexts/user-context';
-import { types } from '../../contexts/user-reducer';
+import { projectContext } from '../../contexts/project-context';
+import { types } from '../../contexts/project-reducer';
 import useFetch from '../../hooks/use-fetch';
 import ProjectsList from '../projects-list';
 import Spinner from './spinner';
@@ -15,7 +15,7 @@ import Spinner from './spinner';
 const Sidebar = () => {
   const [newTask, setNewTask] = useState(false);
   const [taskTitle, setTaskTitle] = useState('');
-  const { dispatch } = useContext(userContext);
+  const { dispatch } = useContext(projectContext);
   
   const [
     { 
@@ -33,17 +33,26 @@ const Sidebar = () => {
     fetchAllProjects
   ] = useFetch('projects');
 
-
   useEffect(() => {
     fetchAllProjects(null, 'GET');
-  }, [fetchAllProjects, newProjectResponse]);
+  }, [fetchAllProjects, newProjectResponse, dispatch]);
+
+  useEffect(() => {
+    if (allProjectsResponse) {
+      dispatch({ 
+        type: types.GET_PROJECTS,
+        payload: allProjectsResponse.projects
+      });
+    }
+  }, [allProjectsResponse, dispatch])
 
   useEffect(() => {
     if (newProjectResponse) {
       setNewTask(false);
       setTaskTitle('');
       dispatch({ 
-        type: types.ADD_PROJECT
+        type: types.GET_PROJECT, 
+        payload: newProjectResponse.project.userProjects
       });
     }
   }, [newProjectResponse, setNewTask, dispatch])
@@ -72,7 +81,7 @@ const Sidebar = () => {
         
       {allProjectsIsLoading && <Spinner />}
 
-      {allProjectsResponse && <ProjectsList projects={allProjectsResponse.projects} />}
+      {allProjectsResponse && <ProjectsList />}
 
       <div className="control-panel"> 
         {newTask && (
@@ -88,7 +97,7 @@ const Sidebar = () => {
               className="control-panel__btn control-panel__btn--green"
               onClick={handleAddProject}
             >
-              {newProjectIsLoading ? 'Wait' : 'Add'}
+              Add
             </button>
           </Fragment>
         )}

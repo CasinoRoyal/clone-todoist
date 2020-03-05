@@ -1,15 +1,17 @@
-import React, { Fragment, useState, useContext, useEffect } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 
 import useFetch from '../hooks/use-fetch';
-import { types } from '../contexts/user-reducer';
-import { userContext }  from '../contexts/user-context';
+import useProjects from '../hooks/use-projects';
+import useTasks from '../hooks/use-tasks';
+import { types } from '../contexts/tasks-reducer';
 import Task from './task';
 import TaskHeader from './task-header';
 
-const TasksList = ({ tasks, title }) => {
+const TasksList = ({ tasks }) => {
   const [tasksList, setTasksList] = useState([]);
   const [task, setTask] = useState('');
-  const { state, dispatch } = useContext(userContext);
+  const { dispatch } = useTasks();
+  const { state } = useProjects();
   const [{response, isLoading}, doFetch] = useFetch('tasks');
 
   useEffect(() => {
@@ -39,7 +41,7 @@ const TasksList = ({ tasks, title }) => {
 
   return(
     <Fragment>
-      <TaskHeader title={title} />
+      <TaskHeader title={state.currentProject.title} />
 
       <ul className='tasks__list'>
         {!tasks.length && <h2 className="no-task">No tasks yet</h2>}

@@ -12,14 +12,6 @@ function App() {
   const { state, dispatch } = useContext(userContext);
 
   useEffect(() => {
-    document.addEventListener('keydown', (e) => {
-      if (e.keyCode === 27 && state.currentTask) {
-        dispatch({ type: types.SET_CURRENT_TASK, payload: null });
-      }
-    })
-  }, [state, dispatch])
-
-  useEffect(() => {
     if (value && !state.isLogged) {
       if (value.createAt < Date.now()) {
         return removeValue();

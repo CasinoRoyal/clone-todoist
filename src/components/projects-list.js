@@ -1,18 +1,17 @@
-import React, { useContext, useState, Fragment } from 'react';
+import React, { useState, Fragment } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 
-import { types } from '../contexts/user-reducer';
-import { userContext } from '../contexts/user-context';
+import { types } from '../contexts/project-reducer';
+import useProjects from '../hooks/use-projects';
 
-const ProjectsList = ({ projects }) => {
+const ProjectsList = () => {
   const [activeProjectId, setActiveProjectId] = useState(null);
   const [isShowProject, setIsShowProject] = useState(true);
-
-  const { dispatch } = useContext(userContext);
+  const { state, dispatch } = useProjects();
   let appGenerateProjects = [];
   let userProjects = [];
 
-  projects.forEach((p) => { 
+  state.projects.forEach((p) => { 
     if (p.isBookmark) {
       appGenerateProjects.push(p);
     } else {

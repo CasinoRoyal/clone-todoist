@@ -1,12 +1,12 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { FaTrash } from 'react-icons/fa';
 
 import Checkbox from './layout/checkbox';
-import { userContext } from '../contexts/user-context';
-import { types } from '../contexts/user-reducer';
+import { types } from '../contexts/tasks-reducer';
+import useTasks from '../hooks/use-tasks';
 
 const Task = ({ task, onDelete }) => {
-  const { dispatch } = useContext(userContext);
+  const { dispatch } = useTasks();
   const handleClickTask = () => {
     dispatch({type: types.SET_CURRENT_TASK, payload: task})
   }
