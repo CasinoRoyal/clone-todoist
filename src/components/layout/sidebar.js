@@ -9,7 +9,7 @@ import React, { useState, useContext, useEffect, Fragment } from 'react';
 import { userContext } from '../../contexts/user-context';
 import { types } from '../../contexts/user-reducer';
 import useFetch from '../../hooks/use-fetch';
-import UserProjectsList from '../user-projects-list';
+import ProjectsList from '../projects-list';
 import Spinner from './spinner';
 
 const Sidebar = () => {
@@ -72,25 +72,34 @@ const Sidebar = () => {
         
       {allProjectsIsLoading && <Spinner />}
 
-      {allProjectsResponse && <UserProjectsList projects={allProjectsResponse.projects} />}
+      {allProjectsResponse && <ProjectsList projects={allProjectsResponse.projects} />}
 
-      {newTask && (
-        <Fragment>
-          <input 
-            type="text" 
-            value={taskTitle}
-            onChange={(e) => setTaskTitle(e.target.value)}
-            onKeyDown={handleKeyDown}
-          />
-          <button onClick={handleAddProject}>
-            {newProjectIsLoading ? 'Wait' : 'Add'}
-          </button>
-        </Fragment>
-      )}
-        
-      <button onClick={() => setNewTask(!newTask)}>
-        {newTask ? 'Cancel' : '+'}
-      </button>
+      <div className="control-panel"> 
+        {newTask && (
+          <Fragment>
+            <input
+              autoFocus
+              type="text" 
+              value={taskTitle}
+              onChange={(e) => setTaskTitle(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
+            <button 
+              className="control-panel__btn control-panel__btn--green"
+              onClick={handleAddProject}
+            >
+              {newProjectIsLoading ? 'Wait' : 'Add'}
+            </button>
+          </Fragment>
+        )}
+          
+        <button 
+          className="control-panel__btn control-panel__btn--red" 
+          onClick={() => setNewTask(!newTask)}
+        >
+          {newTask ? 'Cancel' : '+'}
+        </button>
+      </div>
     </aside>
   );
 };

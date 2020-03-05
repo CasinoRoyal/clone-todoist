@@ -3,7 +3,7 @@ export const initialState = {
   token: null,
   user: null,
   currentProject: null,
-  isEdit: false,
+  isEditTask: false,
   currentTask: null
 }
 
@@ -47,12 +47,7 @@ export const reducer = (state = initialState, action) => {
     case types.TOGGLE_EDIT_TASK:
       return { 
         ...state,
-        isEdit: !state.isEdit
-      }
-    case types.TOGGLE_TASK_DETAILS:
-      return { 
-        ...state,
-        isOpenTaskDetails: !state.isOpenTaskDetails
+        isEditTask: !state.isEdit
       }
     case types.SET_CURRENT_TASK:
       return {

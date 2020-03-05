@@ -7,14 +7,13 @@ import { types } from '../contexts/user-reducer';
 
 const Task = ({ task, onDelete }) => {
   const { dispatch } = useContext(userContext);
-  
   const handleClickTask = () => {
     dispatch({type: types.SET_CURRENT_TASK, payload: task})
   }
 
   return (
     <li className="task">
-      <Checkbox id={task._id} />
+      <Checkbox id={task._id} isChecked={task.isArchived} />
       <div className="task__container">
         <span className="task__content" onClick={handleClickTask}>
           {task.body}

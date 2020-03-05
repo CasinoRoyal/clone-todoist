@@ -59,17 +59,20 @@ const Welcome = () => {
             type="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            required
           />
          )}     
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
         />
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
         <button type="submit" disabled={!!isLoading}>{isLogin ? 'Log in' : 'Sign up'}</button>
       </form>

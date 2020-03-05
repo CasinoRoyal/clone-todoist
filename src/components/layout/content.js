@@ -15,7 +15,7 @@ const Content = () => {
     if (state && state.currentProject) {
       doFetch(null, 'GET');
     }
-  }, [state, doFetch, state.isEdit]);
+  }, [state, doFetch, state.isEditTask]);
 
   return(
     <section className='content'>
