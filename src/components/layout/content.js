@@ -14,6 +14,9 @@ const Content = () => {
   const { state: projectsState } = useProjects();
   const url = projectsState.currentProject && projectsState.currentProject.projectId; 
   const [{response, isLoading}, doFetch] = useFetch(`tasks/${url}`);
+  const listOfProjects = projectsState && projectsState.projects.map((project) => {
+    return { name: project.title, _id: project._id }
+  });
 
   useEffect(() => {
     document.addEventListener('keydown', (e) => {
@@ -32,8 +35,8 @@ const Content = () => {
   return(
     <section className='content'>
       <Sidebar />
-      
-      <WithCustomMenu>
+
+      <WithCustomMenu listOfProjects={listOfProjects}>
         <div className="tasks">
           {response && 
             <TasksList tasks={response.tasks} />

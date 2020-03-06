@@ -9,19 +9,22 @@ const ContextMenuItem = ({itemName, handleClick, children}) => (
   </li>
 );
 
-const WithContextMenu = ({ children }) => {
+const WithContextMenu = ({ listOfProjects, children }) => {
   const [show, setShow] = useState(false);
   const ctx = useRef();
   const list = [
     {name: 'Add to Today'}, 
     {name: 'Mark as completed'},
-    {name: 'Move to...', nestedList: [{name: 'hello'}, {name: 'friend'}]}, 
+    {name: 'Move to...', nestedList: [...listOfProjects]}, 
     {name: 'Delete task'}
   ];
-
   const onContextMenu = (e) => {
     e.preventDefault();
-    console.dir(e.target)
+    
+    if (listOfProjects.length <= 0) {
+      return;
+    }
+
     setShow(true);
     const left = e.pageX;
     const top = e.pageY;
@@ -40,7 +43,7 @@ const WithContextMenu = ({ children }) => {
     ctx.current.addEventListener('contextmenu', onContextMenu);
 
     return () => ctx.current.removeEventListener('contextmenu', onContextMenu);
-  }, []);
+  }, [listOfProjects]);
 
   useEffect(() => {
     document.addEventListener('click', onContextMenuClose);
@@ -51,10 +54,11 @@ const WithContextMenu = ({ children }) => {
   const handleClick = (e) => {
     console.log(e.target)
   };
+
   return(
     <div ref={ctx} className="ctx-menu">
       { 
-        show && renderList(list, ContextMenuItem, handleClick)
+        show && (listOfProjects.length > 0) && renderList(list, ContextMenuItem, handleClick)
       }
       {children}
     </div>

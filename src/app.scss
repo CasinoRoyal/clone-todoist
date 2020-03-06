@@ -1007,6 +1007,8 @@ header {
     top: 50%;
     left: 100%;
     transition: all .2s;
+    overflow: overlay;
+    height: 250px;
   }
 
   & .ctx-menu__item {
