@@ -7,6 +7,7 @@ import useFetch from '../../hooks/use-fetch';
 import useProjects from '../../hooks/use-projects';
 import useTasks from '../../hooks/use-tasks';
 import { types } from '../../contexts/tasks-reducer';
+import WithCustomMenu from '../../hoc/with-custom-menu';
 
 const Content = () => {
   const { state: tasksState, dispatch } = useTasks();
@@ -31,12 +32,14 @@ const Content = () => {
   return(
     <section className='content'>
       <Sidebar />
-
-      <div className="tasks">
-        {response && 
-          <TasksList tasks={response.tasks} />
-        }
-      </div>
+      
+      <WithCustomMenu>
+        <div className="tasks">
+          {response && 
+            <TasksList tasks={response.tasks} />
+          }
+        </div>
+      </WithCustomMenu>
 
       {tasksState.currentTask && <TaskDetails />}
     </section>

@@ -39,7 +39,7 @@ const TasksList = ({ tasks }) => {
     doFetch({ _id }, 'DELETE');
   }
 
-  return(
+  return(  
     <Fragment>
       <TaskHeader title={state.currentProject.title} />
 

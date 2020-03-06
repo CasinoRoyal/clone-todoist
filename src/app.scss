@@ -987,3 +987,42 @@ header {
     border-bottom: 1px solid grey;
   }
 }
+
+.ctx-menu {
+  display: flex;
+  flex-grow: 1;
+}
+
+.ctx-menu__list {
+  border-radius: 3px;
+  position: absolute;
+  width: 200px;
+  list-style-type: none;
+  background-color: white;
+  border: 1px solid;
+
+  & ul {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    transition: all .2s;
+  }
+
+  & .ctx-menu__item {
+    cursor: pointer;
+    padding: 10px;
+    transition: all .2s;
+  }
+
+  & .ctx-menu__item:hover {
+    background-color: #db4c3f;
+    color: white;
+  }
+
+  & .ctx-menu__item:hover > ul {
+    display: block;
+    background-color: #fff;
+    color: black;
+  }
+}
