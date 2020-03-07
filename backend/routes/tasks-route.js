@@ -20,8 +20,11 @@ router
   .delete(protect, deleteTask)
 
 router
+  .route('/moveTask')
+  .post(protect, bindTaskToAnotherProject)
+
+router
   .route('/:projectId')
   .get(protect, getAllTaskFromProject)
-  .post(protect, bindTaskToAnotherProject)
 
 module.exports = router;

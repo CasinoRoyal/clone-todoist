@@ -6,13 +6,17 @@ import useTasks from '../hooks/use-tasks';
 import { types } from '../contexts/tasks-reducer';
 import Task from './task';
 import TaskHeader from './task-header';
+import WithCustomMenu from '../hoc/with-custom-menu';
 
 const TasksList = ({ tasks }) => {
   const [tasksList, setTasksList] = useState([]);
   const [task, setTask] = useState('');
-  const { dispatch } = useTasks();
+  const { state: tasksState, dispatch } = useTasks();
   const { state } = useProjects();
   const [{response, isLoading}, doFetch] = useFetch('tasks');
+  const listOfProjects = state && state.projects.map((project) => {
+    return { name: project.title, _id: project._id }
+  });
 
   useEffect(() => {
     setTasksList(tasks);
@@ -43,13 +47,15 @@ const TasksList = ({ tasks }) => {
     <Fragment>
       <TaskHeader title={state.currentProject.title} />
 
-      <ul className='tasks__list'>
-        {!tasks.length && <h2 className="no-task">No tasks yet</h2>}
-        
-        {tasksList.map(task => {
-          return <Task key={task._id} task={task} onDelete={handleTaskDelete} />        
-        })}
-      </ul>
+      <WithCustomMenu listOfProjects={listOfProjects}>
+        <ul className='tasks__list'>
+            {!tasks.length && <h2 className="no-task">No tasks yet</h2>}
+            
+            {tasksList.map(task => {
+              return <Task key={task._id} task={task} onDelete={handleTaskDelete} />        
+            })}
+        </ul>
+      </WithCustomMenu>
 
       <div className="tasks__footer">
         <input 

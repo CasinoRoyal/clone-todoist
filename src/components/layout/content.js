@@ -7,16 +7,12 @@ import useFetch from '../../hooks/use-fetch';
 import useProjects from '../../hooks/use-projects';
 import useTasks from '../../hooks/use-tasks';
 import { types } from '../../contexts/tasks-reducer';
-import WithCustomMenu from '../../hoc/with-custom-menu';
 
 const Content = () => {
   const { state: tasksState, dispatch } = useTasks();
   const { state: projectsState } = useProjects();
   const url = projectsState.currentProject && projectsState.currentProject.projectId; 
   const [{response, isLoading}, doFetch] = useFetch(`tasks/${url}`);
-  const listOfProjects = projectsState && projectsState.projects.map((project) => {
-    return { name: project.title, _id: project._id }
-  });
 
   useEffect(() => {
     document.addEventListener('keydown', (e) => {
@@ -30,19 +26,20 @@ const Content = () => {
     if (projectsState && projectsState.currentProject) {
       doFetch(null, 'GET');
     }
-  }, [projectsState, doFetch, tasksState.isEditTask]);
+    if (tasksState.trigger) {
+      dispatch({ type: types.TRIGGER, payload: false })
+    }
+  }, [projectsState, doFetch, tasksState.isEditTask, tasksState.trigger]);
 
   return(
     <section className='content'>
       <Sidebar />
 
-      <WithCustomMenu listOfProjects={listOfProjects}>
-        <div className="tasks">
-          {response && 
-            <TasksList tasks={response.tasks} />
-          }
-        </div>
-      </WithCustomMenu>
+      <div className="tasks">
+        {response && 
+          <TasksList tasks={response.tasks} />
+        }
+      </div>
 
       {tasksState.currentTask && <TaskDetails />}
     </section>

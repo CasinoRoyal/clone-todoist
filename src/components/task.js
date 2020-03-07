@@ -12,7 +12,7 @@ const Task = ({ task, onDelete }) => {
   }
 
   return (
-    <li className="task">
+    <li className="task" data-taskid={task._id}>
       <Checkbox id={task._id} isChecked={task.isArchived} />
       <div className="task__container">
         <span className="task__content" onClick={handleClickTask}>

@@ -28,19 +28,37 @@ exports.createTask = async (req, res) => {
 };
 
 exports.bindTaskToAnotherProject = async (req, res) => {
-  const { taskId } = req.params;
-  const { projectId } = req.body;
+  const { projectId, taskId } = req.body;
   try {
 
-    const task = await Task.findById({ taskId });
-    if (!task) return res.status(404).json({ msg: 'task not found' });
+    const task = await Task.findOne({ _id: taskId  });
+    if (!task) {
+      return res.status(404).json({ msg: 'task not found' });
+    }
 
-    const project = await Project.findById({ projectId })
+    const project = await Project.findOne({ _id: req.userProjects._id }) 
     if (!project) return res.status(404).json({ msg: 'project not found' });
 
-    console.log(task);
-    console.log(project)
+    // delete task from current project 
+    project.userProjects.forEach((project) => {
+      if (project._id.toString() == task.project.toString()) {
+        const index = project.tasks.findIndex(({ _id }) => _id == taskId);
+        project.tasks.splice(index, 1);
+      }
+    })
 
+    // add task to new project and change task ref to new project
+    project.userProjects.forEach((project) => {
+      if (project._id == projectId) {
+        task.project = project._id;
+        project.tasks.push(task);
+      }
+    })
+
+    await task.save();
+    await project.save();
+
+    res.status(200).json({ status: 'success' })
   } catch (err) {
     console.error(err);
     return res.status(500).json({ msg: err });
@@ -49,41 +67,53 @@ exports.bindTaskToAnotherProject = async (req, res) => {
 
 exports.archiveTask = async (req, res) => {
   const { _id } = req.body;
+  try {
+    const task = await Task.findOne({ _id });
 
-  const task = await Task.findOne({ _id });
+    if (!task) {
+      return res.status(404).json({ msg: 'Task not found' });
+    }
 
-  if (!task) {
-    return res.status(404).json({ msg: 'Task not found' });
+    task.isArchived = !task.isArchived;
+    await task.save();
+    
+    res.status(200).json({task})
+  } catch(err) {
+      console.error(err);
+      return res.status(500).json({ msg: err });
   }
-
-  task.isArchived = !task.isArchived;
-  await task.save();
-  
-  res.status(200).json({task})
 };
 
 
 exports.updateTask = async (req, res) => {
   const { _id, taskBody } = req.body;
+  try {
+    const task = await Task.findOneAndUpdate({ _id }, { body: taskBody });
 
-  const task = await Task.findOneAndUpdate({ _id }, { body: taskBody });
+    if (!task) {
+      return res.status(404).json({ msg: 'Task not found' });
+    }
 
-  if (!task) {
-    return res.status(404).json({ msg: 'Task not found' });
+    res.status(200).json({task})
+  } catch(err) {
+      console.error(err);
+      return res.status(500).json({ msg: err });    
   }
-
-  res.status(200).json({task})
 };
 
 exports.deleteTask = async (req, res) => {
   const { _id } = req.body;
-  const task = await Task.findByIdAndDelete({ _id });
-  console.log(task)
-  if (!task) {
-    return res.status(404).json({ msg: 'Task not found' });
-  }
+  try {
+    const task = await Task.findByIdAndDelete({ _id });
+    if (!task) {
+      return res.status(404).json({ msg: 'Task not found' });
+    }
 
-  res.status(204).json({ status: 'success' })
+    res.status(204).json({ status: 'success' })
+  } catch(err) {
+      console.error(err);
+      return res.status(500).json({ msg: err });  
+  }
 };
 
 exports.getAllTaskFromProject = async (req, res) => {

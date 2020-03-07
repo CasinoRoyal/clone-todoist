@@ -25,6 +25,7 @@ export const renderList = (list, Component, fn) => {
               key={item.name.length + Math.random() * 10} 
               itemName={item.name}
               handleClick={(e)=>fn(e)}
+              id={item._id}
             />
           ) 
         })
