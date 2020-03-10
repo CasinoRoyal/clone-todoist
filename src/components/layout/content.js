@@ -11,33 +11,46 @@ import { types } from '../../contexts/tasks-reducer';
 const Content = () => {
   const { state: tasksState, dispatch } = useTasks();
   const { state: projectsState } = useProjects();
-  const url = projectsState.currentProject && projectsState.currentProject.projectId; 
-  const [{response, isLoading}, doFetch] = useFetch(`tasks/${url}`);
+  // const url = projectsState.currentProject && projectsState.currentProject.projectId; 
+  // const [{response, isLoading}, doFetch] = useFetch(`tasks/${url}`);
+
+  const handleKeyDown = (e) => {
+    if (e.keyCode === 27 && tasksState.currentTask) {
+      dispatch({ type: types.SET_CURRENT_TASK, payload: null });
+    }
+  }
 
   useEffect(() => {
-    document.addEventListener('keydown', (e) => {
-      if (e.keyCode === 27 && tasksState.currentTask) {
-        dispatch({ type: types.SET_CURRENT_TASK, payload: null });
-      }
-    })
+    document.addEventListener('keydown', handleKeyDown)
+
+    return () => document.removeEventListener('keydown', handleKeyDown)
   }, [tasksState.currentTask, dispatch])
 
-  useEffect(() => {
-    if (projectsState && projectsState.currentProject) {
-      doFetch(null, 'GET');
-    }
-    if (tasksState.trigger) {
-      dispatch({ type: types.TRIGGER, payload: false })
-    }
-  }, [projectsState, doFetch, tasksState.isEditTask, tasksState.trigger]);
+  // useEffect(() => {
+  //   if (projectsState && projectsState.currentProject) {
+  //     doFetch(null, 'GET');
+  //   }
+
+  //   // if (tasksState.passTask) {
+  //   //   dispatch({ type: types.PASS_TASK, payload: false })
+  //   // }
+  // }, [projectsState, doFetch, tasksState.isEditTask]);
+
+  // useEffect(() => {
+  //   if (response && response.tasks) {
+  //     dispatch({ type: types.GET_TASKS, payload: response.tasks })
+  //   }
+  // }, [dispatch, response.tasks, response]);
 
   return(
     <section className='content'>
       <Sidebar />
 
       <div className="tasks">
-        {response && 
-          <TasksList tasks={response.tasks} />
+        {
+          projectsState.currentProject && 
+          projectsState.currentProject.projectId &&
+          <TasksList />
         }
       </div>
 

@@ -13,10 +13,11 @@ const ContextMenuItem = ({itemName, handleClick, id, children}) => (
 );
 
 const WithContextMenu = ({ listOfProjects = [], children }) => {
+  const [isDeleting, setIsDeleting] = useState(false);
   const [show, setShow] = useState(false);
   const [taskId, setTaskId] = useState(null);
-  const [, doFetch] = useFetch('tasks/moveTask');
-  const { dispatch } = useTasks();
+  const [{response, isLoading}, doFetch] = useFetch('tasks/moveTask');
+  const { state, dispatch } = useTasks();
   const ctx = useRef();
   const list = [
     {name: 'Mark as completed'},
@@ -24,30 +25,12 @@ const WithContextMenu = ({ listOfProjects = [], children }) => {
     {name: 'Delete task'}
   ];
 
-  const onContextMenu = (e) => {
-    e.preventDefault();
-    if (listOfProjects.length <= 0) {
-      return;
+  useEffect(() => {
+    if (response && !isLoading) {
+      dispatch({ type: types.PASS_TASK, payload: true });
+      setIsDeleting(false)
     }
-    const li = e.target.closest('li');
-
-    if (li) {
-      setTaskId(li.dataset.taskid);
-    }
-
-    setShow(true);
-    const left = e.pageX;
-    const top = e.pageY;
-
-    ctx.current.firstElementChild.style.left = left + 'px';
-    ctx.current.firstElementChild.style.top = top + 'px';
-  }
-
-  const onContextMenuClose = (e) => {
-    if (show) {
-      setShow(false);
-    }
-  }
+  }, [response, isLoading, dispatch, types]);
 
   useEffect(() => {
     ctx.current.addEventListener('contextmenu', onContextMenu);
@@ -61,6 +44,34 @@ const WithContextMenu = ({ listOfProjects = [], children }) => {
     return () => document.removeEventListener('click', onContextMenuClose);
   }, [show])
 
+
+  function onContextMenu (e) {
+    e.preventDefault();
+    if (listOfProjects.length <= 0) {
+      return;
+    }
+    const li = e.target.closest('li');
+
+    if (li) {
+      setTaskId(li.dataset.taskid);
+    } else {
+      return;
+    }
+
+    setShow(true);
+    const left = e.pageX;
+    const top = e.pageY;
+
+    ctx.current.firstElementChild.style.left = left + 'px';
+    ctx.current.firstElementChild.style.top = top + 'px';
+  }
+
+  function onContextMenuClose (e) {
+    if (show) {
+      setShow(false);
+    }
+  }
+
   const handleClick = (e) => {
     const projectId = e.target.dataset.id;
     const options = {
@@ -68,8 +79,12 @@ const WithContextMenu = ({ listOfProjects = [], children }) => {
       taskId
     }
     doFetch(options, 'POST');
-    dispatch({ type: types.TRIGGER, payload: true })
+    setIsDeleting(true);
   };
+
+  if (isLoading && isDeleting) {
+    return <h1>Loading...</h1>
+  }
 
   return(
     <div ref={ctx} className="ctx-menu">

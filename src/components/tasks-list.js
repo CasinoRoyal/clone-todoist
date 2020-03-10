@@ -8,50 +8,74 @@ import Task from './task';
 import TaskHeader from './task-header';
 import WithCustomMenu from '../hoc/with-custom-menu';
 
-const TasksList = ({ tasks }) => {
-  const [tasksList, setTasksList] = useState([]);
+const TasksList = () => {
   const [task, setTask] = useState('');
   const { state: tasksState, dispatch } = useTasks();
-  const { state } = useProjects();
-  const [{response, isLoading}, doFetch] = useFetch('tasks');
-  const listOfProjects = state && state.projects.map((project) => {
-    return { name: project.title, _id: project._id }
-  });
+  const { state: projectsState } = useProjects();
+  const url = projectsState.currentProject.projectId;
+  const [
+    { response: responseAddTask, isLoading: isLoadingAddTask }, 
+    fetchTask
+  ] = useFetch('tasks');
+  
+  const [
+    { response: responseAllTasks, isLoading: isLoadingAllTasks }, 
+    fetchAllTasks
+  ] = useFetch(`tasks/${url}`);
 
   useEffect(() => {
-    setTasksList(tasks);
-  }, [tasks])
+    if (tasksState.passTask) {
+      dispatch({ type: types.PASS_TASK, payload: false })
+    }
+  }, [tasksState.passTask, dispatch])
 
   useEffect(() => {
-    if (response && !isLoading) {
+    fetchAllTasks(null, 'GET');
+  }, [fetchAllTasks, tasksState.passTask, projectsState.currentProject, dispatch]);
+
+  useEffect(() => {
+    if (responseAllTasks) {
+      dispatch({ type: types.GET_TASKS, payload: responseAllTasks.tasks })
+    }
+  }, [responseAllTasks, dispatch])
+
+  useEffect(() => {
+    if (responseAddTask && !isLoadingAddTask) {
       dispatch({ type: types.ADD_TASK });
       setTask('');
     }
-  }, [response, isLoading, dispatch]);
+  }, [responseAddTask, isLoadingAddTask, dispatch]);
 
   const handleAddTask = () => {
     const options = {
-      projectId: state.currentProject.projectId,
+      projectId: projectsState.currentProject.projectId,
       task
     }
-    doFetch(options, 'POST');
+
+    fetchTask(options, 'POST');
   };
 
   const handleTaskDelete = (_id) => {
-    const filtredList = tasksList.filter((task) => task._id !== _id);
-    setTasksList(filtredList);
-    doFetch({ _id }, 'DELETE');
+    dispatch({ type: types.DELETE_TASK });
+    fetchTask({ _id }, 'DELETE');
   }
 
+  const listOfProjects = projectsState.projects.map((project) => {
+    return { name: project.title, _id: project._id }
+  });
+
+  if (isLoadingAllTasks || tasksState.passTask) {
+    return <h1>LOADING TASKS...</h1>
+  }
   return(  
     <Fragment>
-      <TaskHeader title={state.currentProject.title} />
+      <TaskHeader title={projectsState.currentProject.title} />
 
       <WithCustomMenu listOfProjects={listOfProjects}>
         <ul className='tasks__list'>
-            {!tasks.length && <h2 className="no-task">No tasks yet</h2>}
+            {!tasksState.tasks.length && <h2 className="no-task">No tasks yet</h2>}
             
-            {tasksList.map(task => {
+            {tasksState.tasks.map(task => {
               return <Task key={task._id} task={task} onDelete={handleTaskDelete} />        
             })}
         </ul>
