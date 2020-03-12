@@ -7,6 +7,7 @@ import { types } from '../contexts/tasks-reducer';
 import Task from './task';
 import TaskHeader from './task-header';
 import WithCustomMenu from '../hoc/with-custom-menu';
+import Spinner from './layout/spinner'
 
 const TasksList = () => {
   const [task, setTask] = useState('');
@@ -65,7 +66,7 @@ const TasksList = () => {
   });
 
   if (isLoadingAllTasks || tasksState.passTask) {
-    return <h1>LOADING TASKS...</h1>
+    return <Spinner />
   }
   return(  
     <Fragment>

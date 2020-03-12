@@ -4,6 +4,7 @@ import { renderList } from '../utils/render-list';
 import useFetch from '../hooks/use-fetch';
 import useTasks from '../hooks/use-tasks';
 import { types } from '../contexts/tasks-reducer';
+import Spinner from '../components/layout/spinner';
 
 const ContextMenuItem = ({itemName, handleClick, id, children}) => (
   <li className="ctx-menu__item" onClick={handleClick} data-id={id || null}>
@@ -13,7 +14,6 @@ const ContextMenuItem = ({itemName, handleClick, id, children}) => (
 );
 
 const WithContextMenu = ({ listOfProjects = [], children }) => {
-  const [isDeleting, setIsDeleting] = useState(false);
   const [show, setShow] = useState(false);
   const [taskId, setTaskId] = useState(null);
   const [{response, isLoading}, doFetch] = useFetch('tasks/moveTask');
@@ -28,7 +28,6 @@ const WithContextMenu = ({ listOfProjects = [], children }) => {
   useEffect(() => {
     if (response && !isLoading) {
       dispatch({ type: types.PASS_TASK, payload: true });
-      setIsDeleting(false)
     }
   }, [response, isLoading, dispatch, types]);
 
@@ -79,12 +78,7 @@ const WithContextMenu = ({ listOfProjects = [], children }) => {
       taskId
     }
     doFetch(options, 'POST');
-    setIsDeleting(true);
   };
-
-  if (isLoading && isDeleting) {
-    return <h1>Loading...</h1>
-  }
 
   return(
     <div ref={ctx} className="ctx-menu">

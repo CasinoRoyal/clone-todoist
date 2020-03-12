@@ -28,6 +28,12 @@ app.use('/api/users', usersRouter);
 app.use('/api/projects', projectsRouter);
 app.use('/api/tasks', tasksRouter);
 
+app.use((error, req, res, next) => {
+  return res
+    .status(error.statusCode || 500)
+    .json({ message: error.message || "Something went wrong, sorry" });
+});
+
 const port = process.env.PORT || 8000;
 
 app.listen(port, () => console.log(`Server running on port ${port}`));

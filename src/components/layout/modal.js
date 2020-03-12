@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 const Modal = ({ children }) => {
   const content = (
@@ -6,7 +7,8 @@ const Modal = ({ children }) => {
       {children}
     </div>
   );
-  return content;
+
+  return ReactDOM.createPortal(content, document.getElementById('modal'));
 };
 
 export default Modal;

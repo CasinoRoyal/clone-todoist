@@ -169,14 +169,8 @@ header {
   }
 
   nav {
-    display: grid;
-    -webkit-box-align: center;
-        -ms-flex-align: center;
-            align-items: center;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr;
-    grid-column-gap: 0px;
-    grid-row-gap: 0px;
+    display: flex;
+    justify-content: space-between;
     max-width: 922px;
     margin: auto;
     height: 44px;
@@ -187,41 +181,42 @@ header {
 
     div {
       &.logo {
-        padding-left: 8px;
-        grid-area: 1 / 1;
-
+        display: flex;
         img {
+          margin: auto;
           width: 24px;
         }
 
       }
 
       &.settings {
-        grid-area: 1 / 2;
-        text-align: right;
-
-        ul {
-          float: right;
+        display: flex;
+        
+        .settings__list {
+          display: flex;
+          padding-left: 5px;
+          padding-right: 5px;
+          list-style-type: none;
+          border-right: 1px solid rgba(255,255,255, .1)
         }
 
-        ul li {
-          @include va;
-
-          list-style-type: none;
+        .settings__item {
+          display: flex;
+          margin: auto;
           cursor: pointer;
           width: 30px;
           height: 30px;
-          text-align: center;
-          vertical-align: middle;
-          float: left;
-
+  
           &:hover {
             border-radius: 3px;
             background-color: rgba(255,255,255,0.2);
           }
+          
+          & svg {
+            margin: auto;
+          }
 
           &.settings__add {
-            margin-right: 15px;
             font-size: 30px;
 
             button {
@@ -988,11 +983,6 @@ header {
   }
 }
 
-/* .ctx-menu {
-  display: flex;
-  flex-grow: 1;
-} */
-
 .ctx-menu__list {
   border-radius: 3px;
   position: absolute;
@@ -1027,4 +1017,33 @@ header {
     background-color: #fff;
     color: black;
   }
+}
+
+.modal {
+  display: flex;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0, .2);
+
+  & .spinner {
+    margin: auto;
+  }
+}
+
+.settings__logout {
+  border: none;
+  background-color: transparent;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: .5;
+  transition: all .2s;
+
+  & svg {
+    fill: white;
+  }
+
+  &:hover {
+    opacity: 1;
+  } 
 }

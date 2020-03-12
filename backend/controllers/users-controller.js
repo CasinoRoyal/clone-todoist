@@ -2,11 +2,11 @@ const User = require('../models/User');
 const Project = require('../models/Project');
 const { createAuthToken } = require('../utils/token-creator');
 
-exports.getCurrentUser = async (req, res) => {
+exports.getCurrentUser = async (req, res, next) => {
   const user = req.user;
 
   if (!user) {
-    return res.status(401).json({ msg: 'Fail'})
+    return next(new AppError(404, 'User not found'));
   }
 
   res.status(200).json({
@@ -15,7 +15,7 @@ exports.getCurrentUser = async (req, res) => {
   });
 };
 
-exports.signup = async (req, res) => {
+exports.signup = async (req, res, next) => {
   try {
     const newUser = new User({
       ...req.body,
@@ -26,6 +26,7 @@ exports.signup = async (req, res) => {
       user: newUser._id,
       userProjects: [...bookmarks]
     });
+    
     newUser.projects = newProject._id;
     await newProject.save();
     await newUser.save();
@@ -38,17 +39,16 @@ exports.signup = async (req, res) => {
     createAuthToken(user, 201, req, res);
 
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ err });
+      return next(new AppError(500, err)); 
   }
 };
 
-exports.login = async (req, res) => {
+exports.login = async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.body.email });
 
     if (!user || !(await user.isCorrectPassword(req.body.password, user.password))) {
-      return res.status(500).json({ msg: 'incorrect credentials' }); 
+      return next(new AppError(400, 'Credentials was wrong. Check your inputs'));  
     }
     
     const currentUser = {
@@ -59,7 +59,6 @@ exports.login = async (req, res) => {
     createAuthToken(currentUser, 200, req, res);
 
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ err });
+      return next(new AppError(500, err)); 
   }
 };

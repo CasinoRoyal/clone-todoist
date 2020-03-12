@@ -1,10 +1,15 @@
 const Project = require('../models/Project');
+const AppError = require('../models/AppError');
 
-exports.getAllUsersProjects = async (req, res) => {
+exports.getAllUsersProjects = async (req, res, next) => {
   try {
     const projects = await Project
       .findOne({ _id: req.userProjects._id })
       .populate({path: 'userProjects.tasks'});
+
+    if (!projects) {
+      return next(new AppError(404, 'User projects not found'))
+    }
 
     res.status(200).json({
       status: 'success',
@@ -12,14 +17,18 @@ exports.getAllUsersProjects = async (req, res) => {
       projects: projects.userProjects
     })
   } catch (err) {
-    console.log(err)
-    res.status(500).json({ msg: err })
+    return next(new AppError(500, err))
   }
 };
 
-exports.createProject = async (req, res) => {
+exports.createProject = async (req, res, next) => {
   try {
     const currentProject = await Project.findOne({_id: req.userProjects._id});
+    
+    if (!currentProject) {
+      return next(new AppError(400, 'User do not have any projects yet'))
+    }
+
     const newProjectValues = {
       title: req.body.title,
       tasks: []
@@ -33,8 +42,6 @@ exports.createProject = async (req, res) => {
       project: currentProject
     });
   } catch (err) {
-    console.error(err);
-
-    res.status(500).json({ msg: err });
+      return next(new AppError(500, err))
   }
 }

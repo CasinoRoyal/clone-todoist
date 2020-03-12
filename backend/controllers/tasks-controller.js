@@ -1,12 +1,18 @@
 const Task = require('../models/Task');
 const Project = require('../models/Project');
+const AppError = require('../models/AppError');
 
-exports.createTask = async (req, res) => {
+exports.createTask = async (req, res, next) => {
   const { projectId, task } = req.body;
 
   try {
     const newTask = new Task({ body: task });
     const currentUserProjects = await Project.findOne({ _id: req.userProjects._id});
+    
+    if (!currentUserProjects) {
+      return next(new AppError(400, 'User do not have any projects yet'));
+    }
+
     currentUserProjects.userProjects.map(project => {
       if (project._id == projectId) {
         newTask.project = project._id;
@@ -22,22 +28,25 @@ exports.createTask = async (req, res) => {
       task: newTask
     });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({ msg: err });
+      return next(new AppError(500, err));
   }
 };
 
-exports.bindTaskToAnotherProject = async (req, res) => {
+exports.bindTaskToAnotherProject = async (req, res, next) => {
   const { projectId, taskId } = req.body;
   try {
 
     const task = await Task.findOne({ _id: taskId  });
+    
     if (!task) {
-      return res.status(404).json({ msg: 'task not found' });
+      return next(new AppError(404, 'Task not found or was deleted'));
     }
 
     const project = await Project.findOne({ _id: req.userProjects._id }) 
-    if (!project) return res.status(404).json({ msg: 'project not found' });
+    
+    if (!project) {
+      return next(new AppError(404, 'Project not found or was deleted'));
+    }
 
     // delete task from current project 
     project.userProjects.forEach((project) => {
@@ -60,18 +69,17 @@ exports.bindTaskToAnotherProject = async (req, res) => {
 
     res.status(200).json({ status: 'success' })
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({ msg: err });
+      return next(new AppError(500, err));
   }
 };
 
-exports.archiveTask = async (req, res) => {
+exports.archiveTask = async (req, res, next) => {
   const { _id } = req.body;
   try {
     const task = await Task.findOne({ _id });
 
     if (!task) {
-      return res.status(404).json({ msg: 'Task not found' });
+      return next(new AppError(404, 'Task not found'));
     }
 
     task.isArchived = !task.isArchived;
@@ -79,50 +87,48 @@ exports.archiveTask = async (req, res) => {
     
     res.status(200).json({task})
   } catch(err) {
-      console.error(err);
-      return res.status(500).json({ msg: err });
+      return next(new AppError(500, err));
   }
 };
 
 
-exports.updateTask = async (req, res) => {
+exports.updateTask = async (req, res, next) => {
   const { _id, taskBody } = req.body;
   try {
     const task = await Task.findOneAndUpdate({ _id }, { body: taskBody });
 
     if (!task) {
-      return res.status(404).json({ msg: 'Task not found' });
+      return next(new AppError(404, 'Task not found'));
     }
 
     res.status(200).json({task})
   } catch(err) {
-      console.error(err);
-      return res.status(500).json({ msg: err });    
+      return next(new AppError(500, err));    
   }
 };
 
-exports.deleteTask = async (req, res) => {
+exports.deleteTask = async (req, res, next) => {
   const { _id } = req.body;
   try {
     const task = await Task.findByIdAndDelete({ _id });
+    
     if (!task) {
-      return res.status(404).json({ msg: 'Task not found' });
+      return next(new AppError(404, 'Task not found'));
     }
 
     res.status(204).json({ status: 'success' })
   } catch(err) {
-      console.error(err);
-      return res.status(500).json({ msg: err });  
+      return next(new AppError(500, err)); 
   }
 };
 
-exports.getAllTaskFromProject = async (req, res) => {
+exports.getAllTaskFromProject = async (req, res, next) => {
   const { projectId } = req.params;
   try {
     const tasks = await Task.find({ project: projectId });
 
     if (!tasks) {
-      return res.status(400).json({ msg: 'Project was deleted' });
+      return next(new AppError(404, 'Project not found or was deleted'));
     }
 
     return res.status(200).json({
@@ -130,7 +136,6 @@ exports.getAllTaskFromProject = async (req, res) => {
       tasks
     });
   } catch(err) {
-    console.error(err);
-    return res.status(500).json({ msg: err });    
+      return next(new AppError(500, err)); 
   }
 };

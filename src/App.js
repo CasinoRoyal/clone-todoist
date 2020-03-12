@@ -12,25 +12,14 @@ function App() {
   const { state, dispatch } = useContext(userContext);
 
   useEffect(() => {
-    if (value && !state.isLogged) {
-      if (value.createAt < Date.now()) {
+    if (value && value.createAt < Date.now()) {
         return removeValue();
-      }
-
-      dispatch({ 
-        type: types.LOGIN_USER, 
-        payload: {
-          token: value.token,
-          user: value.user
-        }
-      });
     }
-  }, [value, state, dispatch])
+  }, [value.user, removeValue])
 
   if (!state || !state.isLogged) {
     return <Redirect to='/welcome' />
   }
-
 
   return (
     <div className="App">

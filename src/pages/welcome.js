@@ -5,6 +5,7 @@ import useFetch from '../hooks/use-fetch';
 import { userContext } from '../contexts/user-context';
 import { types } from '../contexts/user-reducer';
 import useLocalStorage from '../hooks/use-local-storage';
+import Spinner from '../components/layout/spinner';
 
 const Welcome = () => {
   const [, setValue] = useLocalStorage('token');
@@ -41,6 +42,9 @@ const Welcome = () => {
     doFetch(requestBody, 'POST');
   }; 
 
+  if (isLoading) {
+    return <Spinner />
+  }
 
   return(
     <div className="welcome">
