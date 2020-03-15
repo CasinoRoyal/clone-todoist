@@ -843,12 +843,17 @@ header {
   margin: auto;
 }
 
-.modal {
+.modal-overlay {
   position: absolute;
+  display: flex;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, .2);
+  background-color: rgba(0, 0, 0, .6);
   transition: all .2s ease;
+
+  &--close {
+    display: none;
+  }
 }
 
 .task__container {
@@ -1028,6 +1033,43 @@ header {
 
   & .spinner {
     margin: auto;
+  }
+}
+
+.error-modal {  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 30%;
+  height: 25%;
+  margin: auto;
+  border-radius: 3px;
+  background-color: white;
+
+  &__header {
+    width: 100%;
+    padding: 10px;
+    font-weight: bold;
+    text-align: center;
+    background-color: #db4c3f;
+    color: white;
+  }
+
+  &__button {
+    width: 100px;
+    padding: 5px;
+    margin-top: auto;
+    margin-bottom: 15px;
+    background-color: transparent;
+    border: 1px solid;
+    cursor: pointer;
+    transition: all .2s;
+
+    &:hover {
+      background-color: #db4c3f;
+      border: none;
+      color: white;
+    }
   }
 }
 

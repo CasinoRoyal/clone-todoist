@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { FaPizzaSlice, FaDoorOpen, FaPlus } from 'react-icons/fa';
 
 import useLocalStorage from '../../hooks/use-local-storage';
@@ -7,16 +7,11 @@ import { userContext } from '../../contexts/user-context'
 
 const Header = () => {
   const [,,removeValue] = useLocalStorage('token');
-  const { state, dispatch } = useContext(userContext);
-  
-  useEffect(() => {
-    if (!state.isLogged) {
-      removeValue();
-    }
-  }, [state, removeValue])
+  const { dispatch } = useContext(userContext);
 
   const handleLogoutClick = () => {
     dispatch({type: types.LOGOUT_USER });
+    removeValue();
   }
 
   return(

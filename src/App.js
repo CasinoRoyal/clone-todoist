@@ -15,9 +15,21 @@ function App() {
     if (value && value.createAt < Date.now()) {
         return removeValue();
     }
-  }, [value.user, removeValue])
+
+    if (value && !state.isLogged) {
+      dispatch({ 
+        type: types.LOGIN_USER, 
+        payload: { 
+          token: value.token,
+          user: value.user
+        }
+      })
+    }
+  }, [value, removeValue, dispatch, state.isLogged])
 
   if (!state || !state.isLogged) {
+    dispatch({ type: types.LOGOUT_USER });
+
     return <Redirect to='/welcome' />
   }
 

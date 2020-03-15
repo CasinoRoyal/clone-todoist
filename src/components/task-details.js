@@ -24,7 +24,7 @@ const TaskDetails = () => {
       setIsEdit((prevState) => !prevState);
       dispatch({type: types.TOGGLE_EDIT_TASK});
     }
-  }, [isEdit, doFetch, taskBody])
+  }, [isEdit, doFetch, taskBody, state.currentTask._id, dispatch])
 
   const handleClose = () => {
     dispatch({ type: types.SET_CURRENT_TASK, payload: null })

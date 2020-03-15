@@ -6,21 +6,22 @@ import { userContext } from '../contexts/user-context';
 import { types } from '../contexts/user-reducer';
 import useLocalStorage from '../hooks/use-local-storage';
 import Spinner from '../components/layout/spinner';
+import ErrorModal from '../components/layout/error-modal';
 
 const Welcome = () => {
-  const [, setValue] = useLocalStorage('token');
+  const [value, setValue] = useLocalStorage('token');
   const { state, dispatch } = useContext(userContext);
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLogin, setIsLogin] = useState(false);
+  const [modalClose, setModalClose] = useState(false);
   const requestUrl = isLogin ? 'users/login' : 'users/signup';
-  const [{response, isLoading}, doFetch] = useFetch(requestUrl);
+  const [{response, isLoading, error}, doFetch] = useFetch(requestUrl);
 
   useEffect(() => {
     if (response) {
       setValue(JSON.stringify(response));
-
       dispatch({
         type: types.LOGIN_USER,
         payload: { 
@@ -31,7 +32,7 @@ const Welcome = () => {
     };
   }, [response, dispatch, setValue])
 
-  if (state && state.isLogged) {
+  if (state && state.isLogged && value.token) {
     return <Redirect to='/' />
   };
 
@@ -40,21 +41,29 @@ const Welcome = () => {
     const requestBody = isLogin ? { email, password } : { username, email, password }
 
     doFetch(requestBody, 'POST');
+    setModalClose(false);
   }; 
 
-  if (isLoading) {
-    return <Spinner />
+  const handleModalClose = () => {
+    setModalClose(true);
   }
 
   return(
     <div className="welcome">
       <h2>Welcome page</h2>
+
+      {isLoading && <Spinner />}
+      {
+        (error && !isLoading && !modalClose) && (
+          <ErrorModal errorMsg={error} onClose={handleModalClose} />
+        )
+      }
       
       <div className="welcome__box">
         <span>{isLogin ? 'Sign up, it is free' : 'Have an account?'}</span>
-        <a onClick={() => setIsLogin(!isLogin)}>
+        <button onClick={() => setIsLogin(!isLogin)}>
           {isLogin ? 'Register' : 'Log in'}
-        </a>
+        </button>
       </div>
 
       <form onSubmit={handleSubmit}>

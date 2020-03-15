@@ -1,15 +1,15 @@
 import React from 'react';
 
 import preloader from './preloader.svg';
-import Modal from './modal';
+import ModalOverlay from './modal-overlay';
 
 const Spinner = () => {
   return(
-    <Modal>
+    <ModalOverlay>
       <div className="spinner">
         <img src={preloader} alt=""/>
       </div>
-    </Modal>
+    </ModalOverlay>
   );
 };
 

@@ -32,7 +32,7 @@ const TasksList = () => {
 
   useEffect(() => {
     fetchAllTasks(null, 'GET');
-  }, [fetchAllTasks, tasksState.passTask, projectsState.currentProject, dispatch]);
+  }, [fetchAllTasks, tasksState.passTask, projectsState.currentProject]);
 
   useEffect(() => {
     if (responseAllTasks) {

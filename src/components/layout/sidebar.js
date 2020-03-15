@@ -80,6 +80,7 @@ const Sidebar = () => {
     <aside className="sidebar" data-testid="sidebar">
         
       {allProjectsIsLoading && <Spinner />}
+      {newProjectIsLoading && <Spinner />}
 
       {allProjectsResponse && <ProjectsList />}
 

@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const Project = require('../models/Project');
+const AppError = require('../models/AppError');
 const { createAuthToken } = require('../utils/token-creator');
 
 exports.getCurrentUser = async (req, res, next) => {

@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, useContext } from 'react';
 import axios from 'axios';
 
-// import useLocalStorage from './use-local-storage';
 import { userContext } from '../contexts/user-context';
 
 const useFetch = (url) => {
@@ -11,7 +10,6 @@ const useFetch = (url) => {
   const [options, setOptions] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  // const [value] = useLocalStorage('user');
 
   const doFetch = useCallback((options, method = 'GET') => {
     setRequestMethod(method);
@@ -40,7 +38,7 @@ const useFetch = (url) => {
       })
       .catch(err => {
         console.dir(err)
-        setError(err.message);
+        setError(err.response.data.message);
         setIsLoading(false)
       });
 
