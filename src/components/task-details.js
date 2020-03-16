@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaTimes } from 'react-icons/fa';
+import moment from 'moment';
 
 import { types } from '../contexts/tasks-reducer';
 import useFetch from '../hooks/use-fetch';
@@ -11,6 +12,7 @@ const TaskDetails = () => {
   const [cacheTaskBody, setCacheTaskBody] = useState(state.currentTask.body);
   const [isEdit, setIsEdit] = useState(false);
   const [, doFetch] = useFetch('tasks');
+  const taskDateCreation = moment(state.currentTask.createdAt).format('DD-MM-YY');
 
   useEffect(() => {
     setTaskBody(state.currentTask.body);
@@ -40,6 +42,18 @@ const TaskDetails = () => {
     }
   };
 
+  const handleTaskUpdate = () => {
+    if (taskBody !== cacheTaskBody) {
+      setIsEdit((prevState) => !prevState);
+    }
+  }
+
+  const handleTaskCancelUpdate = () => {
+    if (taskBody !== cacheTaskBody) {
+      setTaskBody(cacheTaskBody);
+    }
+  }
+
   return(
     <aside className="details">
       <div className="details__group">
@@ -51,14 +65,25 @@ const TaskDetails = () => {
           onChange={(e) => setTaskBody(e.target.value)}
           onKeyDown={(e) => handleKeyDown(e) }
         />
-
+        <button 
+          className="details__btn details__btn--update" 
+          onClick={handleTaskUpdate}
+         >
+          Update
+        </button>
+        <button 
+          className="details__btn details__btn--cancel-update" 
+          onClick={handleTaskCancelUpdate}
+         >
+          Cancel
+        </button>
       </div>
 
       <footer className="details__footer">
         <button className="details__close" onClick={handleClose}>
           <FaTimes/>
         </button>
-        <span>{state.currentTask.createdAt}</span>
+        <span>{`Created at: ${taskDateCreation}`}</span>
       </footer>
     </aside>
   )

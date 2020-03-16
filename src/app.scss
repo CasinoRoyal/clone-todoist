@@ -460,7 +460,6 @@ header {
 .content {
   display: flex;
   flex-grow: 1;
-  max-width: 1200px;
 }
 
 /* Tasks
@@ -482,7 +481,8 @@ header {
   &__header {
     display: flex;
     align-items: center;
-    background-color: tomato;
+    background-color: #FAACA8;
+    background-image: linear-gradient(19deg, #FAACA8 0%, #DDD6F3 100%);
     padding: 10px;
   }
 
@@ -499,7 +499,7 @@ header {
     cursor: pointer;
 
     & svg {
-      fill: white;
+      fill: #db4c3f;
       opacity: .5;
       transition: opacity .2s; 
     }
@@ -512,33 +512,33 @@ header {
   &__footer {
     margin-top: auto;
     padding: 10px 20px;
-    background-color: gainsboro;
 
     & input {
       width: 90%;
       padding: 5px;
       font-size: 18px;
       border: none;
-      color: brown;
-      border-bottom: 1px solid brown;
+      color: #db4c3f;
+      border-bottom: 1px solid #db4c3f;
       background-color: transparent;
     }
+  }
 
-    & button {
-      margin-left: 10px;
-      padding: 3px;
-      width: 50px;
-      color: white;
-      border: none;
-      border-radius: 3px;
-      background-color: brown;
-      cursor: pointer;
-      transition: all .3s ease;
-    }
+  &__btn {
+    font-size: 15px;
+    margin-left: 10px;
+    padding: 3px;
+    width: 60px;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    background-color: #db4c3f;
+    cursor: pointer;
+    transition: all .3s ease;
 
-    & button:hover {
-      color: brown;
-      background-color: white;
+    &:hover {
+      color: #db4c3f;
+      background-color: white;  
     }
   }
 
@@ -810,26 +810,25 @@ header {
     margin-bottom: 5px;
   } 
 
-  & div span {
+  &__signature {
     margin-right: 3px;
-    font-size: 14.5px;
   }
 
-  & div a {
+  &__signature-link {
+    border: none;
+    background-color: transparent;
     font-size: 14px;
-    text-decoration: underline;
-    color: tomato;
+    color: #db4c3f;
     cursor: pointer;
-    transition: all .2;
+    transition: all .2s;
   }
 
-  & div a:hover {
-    font-weight: bold;
+  &__signature-link:hover {
+    text-decoration: underline;
   }  
 
-  & button {
+  &__submit {
     border: none;
-    
     font-size: 18px;
     margin: 15px auto;
     padding: 7px;
@@ -839,7 +838,7 @@ header {
     transition: all .2s;
   }
 
-  & button:hover {
+  &__submit:hover {
     color: white;
     background-color: #db4c3f;
   }
@@ -919,13 +918,18 @@ header {
 }
 
 .task__btn {
+  cursor: pointer;
   border: none;
   background-color: transparent;
-  opacity: .3;
-  transition: opacity .2s ease;
 
-  &:hover {
-    cursor: pointer;
+  & svg {
+    fill: #db4c3f;
+    opacity: .3;
+    transition: opacity .2s ease;
+  }
+
+  &:hover svg{
+    
     opacity: 1;
   }
 
@@ -936,20 +940,44 @@ header {
 }
 
 .details {
-  background-color: #fff;
-  padding-top: 60px;
-  padding-bottom: 20px;
-  background-color: rgba(0, 0, 0, .1);
+  padding: 60px 7px 20px;
+  background-color: #f1f1f1;
   width: 300px;
+  margin-left: 5px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 
+  &__group {
+
+  }
+
   &__task {
-    margin: 0 5px;
-    background-color: transparent;
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 10px;
     border: none;
     resize: none;
+  }
+
+  &__btn {
+    width: 50%;
+    padding: 5px 0;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    transition: all .2s ease;
+
+    &--update:hover {
+      background-color: green;
+      color: white;
+    }
+
+    &--cancel-update:hover {
+      background-color: tomato;
+      color: white;
+    }
   }
 
   &__close {
@@ -1113,4 +1141,9 @@ header {
   &:hover {
     opacity: 1;
   } 
+}
+
+.no-task {
+  text-align: center;
+  color: rgb(115, 115, 115);
 }

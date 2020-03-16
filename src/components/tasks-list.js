@@ -1,4 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react';
+import { FaPaperPlane } from 'react-icons/fa';
 
 import useFetch from '../hooks/use-fetch';
 import useProjects from '../hooks/use-projects';
@@ -11,6 +12,7 @@ import Spinner from './layout/spinner'
 
 const TasksList = () => {
   const [task, setTask] = useState('');
+  const [isFetch, setIsFetch] = useState(true);
   const { state: tasksState, dispatch } = useTasks();
   const { state: projectsState } = useProjects();
   const url = projectsState.currentProject.projectId;
@@ -32,7 +34,14 @@ const TasksList = () => {
 
   useEffect(() => {
     fetchAllTasks(null, 'GET');
-  }, [fetchAllTasks, tasksState.passTask, projectsState.currentProject]);
+    setIsFetch(false);
+  }, [
+    fetchAllTasks, 
+    isFetch, 
+    tasksState.passTask, 
+    tasksState.isEditTask, 
+    projectsState.currentProject
+  ]);
 
   useEffect(() => {
     if (responseAllTasks) {
@@ -44,6 +53,7 @@ const TasksList = () => {
     if (responseAddTask && !isLoadingAddTask) {
       dispatch({ type: types.ADD_TASK });
       setTask('');
+      setIsFetch(true);
     }
   }, [responseAddTask, isLoadingAddTask, dispatch]);
 
@@ -59,18 +69,18 @@ const TasksList = () => {
   const handleTaskDelete = (_id) => {
     dispatch({ type: types.DELETE_TASK });
     fetchTask({ _id }, 'DELETE');
+    setIsFetch(true);
   }
 
   const listOfProjects = projectsState.projects.map((project) => {
     return { name: project.title, _id: project._id }
   });
 
-  if (isLoadingAllTasks || tasksState.passTask) {
-    return <Spinner />
-  }
-
   return(  
     <Fragment>
+      
+      { (isLoadingAllTasks || tasksState.passTask) && <Spinner /> }
+
       <TaskHeader 
         title={projectsState.currentProject.title} 
         id={projectsState.currentProject.projectId}
@@ -78,7 +88,12 @@ const TasksList = () => {
 
       <WithCustomMenu listOfProjects={listOfProjects}>
         <ul className='tasks__list'>
-            {!tasksState.tasks.length && <h2 className="no-task">No tasks yet</h2>}
+            {!tasksState.tasks.length && (
+              <h2 className="no-task">
+                Oh, no! Empty list
+                <span role="img" aria-label="upset">😦😦</span>
+              </h2>
+            )}
             
             {tasksState.tasks.map(task => {
               return <Task key={task._id} task={task} onDelete={handleTaskDelete} />        
@@ -92,7 +107,9 @@ const TasksList = () => {
           value={task} 
           onChange={(e) => setTask(e.target.value)} 
         />
-        <button onClick={handleAddTask}> >> </button>
+        <button className="tasks__btn" onClick={handleAddTask}>
+          <FaPaperPlane />
+        </button>
       </div>
     </Fragment>
   );

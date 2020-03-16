@@ -50,7 +50,7 @@ const Welcome = () => {
 
   return(
     <div className="welcome">
-      <h2>Welcome page</h2>
+      <h2>Simple clone of Todoist app</h2>
 
       {isLoading && <Spinner />}
       {
@@ -60,8 +60,14 @@ const Welcome = () => {
       }
       
       <div className="welcome__box">
-        <span>{isLogin ? 'Sign up, it is free' : 'Have an account?'}</span>
-        <button onClick={() => setIsLogin(!isLogin)}>
+        <small className="welcome__signature">
+          {isLogin ? 'Sign up, it is free' : 'Have an account?'}
+        </small>
+        
+        <button 
+          className="welcome__signature-link" 
+          onClick={() => setIsLogin(!isLogin)}
+        >
           {isLogin ? 'Register' : 'Log in'}
         </button>
       </div>
@@ -87,7 +93,13 @@ const Welcome = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <button type="submit" disabled={!!isLoading}>{isLogin ? 'Log in' : 'Sign up'}</button>
+        <button 
+          className="welcome__submit"
+          type="submit" 
+          disabled={!!isLoading}
+        >
+          {isLogin ? 'Log in' : 'Sign up'}
+        </button>
       </form>
     </div>
   )
