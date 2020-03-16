@@ -1,4 +1,5 @@
 const Project = require('../models/Project');
+const Task = require('../models/Task');
 const AppError = require('../models/AppError');
 
 exports.getAllUsersProjects = async (req, res, next) => {
@@ -24,7 +25,7 @@ exports.getAllUsersProjects = async (req, res, next) => {
 exports.createProject = async (req, res, next) => {
   try {
     const currentProject = await Project.findOne({_id: req.userProjects._id});
-    
+
     if (!currentProject) {
       return next(new AppError(400, 'User do not have any projects yet'))
     }
@@ -40,6 +41,33 @@ exports.createProject = async (req, res, next) => {
     res.status(201).json({
       status: 'success',
       project: currentProject
+    });
+  } catch (err) {
+      return next(new AppError(500, err))
+  }
+}
+
+
+exports.deleteProject = async (req, res, next) => {
+  const { projectDeleteId } = req.body;
+  try {
+    const projects = await Project.findOne({_id: req.userProjects._id});
+    
+    if (!projects) {
+      return next(new AppError(400, 'User do not have any projects yet'))
+    }
+
+    const filtredProjects = projects.userProjects.filter((project) => {
+      return project._id != projectDeleteId;
+    });
+
+    projects.userProjects = filtredProjects;
+    await projects.save();
+    await Task.deleteMany({ project: projectDeleteId });
+
+    res.status(201).json({ 
+      status: 'success',
+      projects
     });
   } catch (err) {
       return next(new AppError(500, err))

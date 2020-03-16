@@ -8,7 +8,7 @@ export const types = {
   ADD_PROJECT: 'ADD_PROJECT',
   SET_PROJECT: 'SET_PROJECT',
   EDIT_PROJECT: 'EDIT_PROJECT',
-  REMOVE_PROJECT: 'REMOVE_PROJECT',
+  DELETE_PROJECT: 'DELETE_PROJECT',
 }
 
 export const reducer = (state = initialState, action) => {
@@ -30,6 +30,12 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         currentProject: action.payload
+      }
+    case types.DELETE_PROJECT:
+      return {
+        ...state,
+        currentProject: null,
+        projects: [...action.payload]
       }
     default: 
       return state;

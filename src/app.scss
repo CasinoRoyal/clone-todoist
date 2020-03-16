@@ -480,8 +480,33 @@ header {
   }
 
   &__header {
+    display: flex;
+    align-items: center;
     background-color: tomato;
     padding: 10px;
+  }
+
+  &__project-title {
+    color: white;
+  }
+
+  &__project-delete {
+    margin-left: auto;
+    margin-right: 15px;
+    font-size: 15px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+
+    & svg {
+      fill: white;
+      opacity: .5;
+      transition: opacity .2s; 
+    }
+
+    &:hover svg{
+      opacity: 1;
+    }
   }
 
   &__footer {

@@ -47,6 +47,7 @@ const ProjectsList = () => {
               className={setClassName(project._id)}
             >
               <span>{project.title}</span>
+
             </li>
           ))
         }
@@ -71,7 +72,7 @@ const ProjectsList = () => {
                     onClick={handleProjectClick}
                     className={setClassName(project._id)}
                   >
-                    {project.title}
+                    <span>{project.title}</span>
                   </li>
                 );
               })

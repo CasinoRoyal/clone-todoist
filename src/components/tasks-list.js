@@ -68,9 +68,13 @@ const TasksList = () => {
   if (isLoadingAllTasks || tasksState.passTask) {
     return <Spinner />
   }
+
   return(  
     <Fragment>
-      <TaskHeader title={projectsState.currentProject.title} />
+      <TaskHeader 
+        title={projectsState.currentProject.title} 
+        id={projectsState.currentProject.projectId}
+      />
 
       <WithCustomMenu listOfProjects={listOfProjects}>
         <ul className='tasks__list'>
