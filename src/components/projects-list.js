@@ -1,12 +1,14 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState, Fragment, useContext } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 
 import { types } from '../contexts/project-reducer';
+import { appContext } from '../contexts/app-context';
 import useProjects from '../hooks/use-projects';
 
 const ProjectsList = () => {
   const [activeProjectId, setActiveProjectId] = useState(null);
   const [isShowProject, setIsShowProject] = useState(true);
+  const { setAppState } = useContext(appContext);
   const { state, dispatch } = useProjects();
   let appGenerateProjects = [];
   let userProjects = [];
@@ -22,6 +24,7 @@ const ProjectsList = () => {
   const handleProjectClick = (e) => {
     const projectId = e.currentTarget.dataset.projectid;
     setActiveProjectId(projectId);
+    setAppState({ isShowSidebar: false });
     dispatch({ 
       type: types.SET_PROJECT, 
       payload: { projectId, title: e.currentTarget.textContent } 

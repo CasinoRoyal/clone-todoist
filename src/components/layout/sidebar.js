@@ -8,6 +8,7 @@ import React, { useState, useContext, useEffect, Fragment } from 'react';
 
 import { projectContext } from '../../contexts/project-context';
 import { types } from '../../contexts/project-reducer';
+import { appContext } from '../../contexts/app-context';
 import useFetch from '../../hooks/use-fetch';
 import ProjectsList from '../projects-list';
 import Spinner from './spinner';
@@ -16,7 +17,8 @@ const Sidebar = () => {
   const [newTask, setNewTask] = useState(false);
   const [taskTitle, setTaskTitle] = useState('');
   const { dispatch } = useContext(projectContext);
-  
+  const { appState } = useContext(appContext);
+
   const [
     { 
       response: newProjectResponse, 
@@ -76,8 +78,14 @@ const Sidebar = () => {
     }
   };
 
+  const classNameSidebar = appState.isShowSidebar ? (
+    'sidebar sidebar--show'
+  ) : (
+    'sidebar'
+  );
+
   return(
-    <aside className="sidebar" data-testid="sidebar">
+    <aside className={classNameSidebar} data-testid="sidebar">
         
       {allProjectsIsLoading && <Spinner />}
       {newProjectIsLoading && <Spinner />}

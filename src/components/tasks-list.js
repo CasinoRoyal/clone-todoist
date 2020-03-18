@@ -102,14 +102,17 @@ const TasksList = () => {
       </WithCustomMenu>
 
       <div className="tasks__footer">
-        <input 
-          type="text" 
-          value={task} 
-          onChange={(e) => setTask(e.target.value)} 
-        />
-        <button className="tasks__btn" onClick={handleAddTask}>
-          <FaPaperPlane />
-        </button>
+        <label>
+          <input 
+            type="text" 
+            value={task} 
+            onChange={(e) => setTask(e.target.value)}
+            placeholder="Add task"
+          />
+          <button disabled={!task} className="tasks__btn" onClick={handleAddTask}>
+            <FaPaperPlane />
+          </button>
+        </label>
       </div>
     </Fragment>
   );

@@ -159,21 +159,76 @@ header {
   -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
           box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   height: 44px;
-  /* z-index: 400; */
-  /* position: fixed; */
   top: 0;
   width: 100%;
 
-  @include mq('900px') {
+  @include mq('930px') {
     padding: 0 10px;
+  }
+
+  @include mq('500px') {
+    position: absolute;
+    box-shadow: none;
+    border: none;
+    background-color: transparent;
   }
 
   nav {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     max-width: 922px;
     margin: auto;
     height: 44px;
+
+    @include mq('800px') {
+      padding: 0 10px;
+    }
+    
+    .hamburger {
+      display: none;
+      position: relative;
+      width: 22px;
+      height: 1px;
+      padding: 0;
+      background-color: white;
+      border: none;
+      cursor: pointer;
+
+      &:before,
+      &:after {
+        content: '';
+        position: absolute;
+        border-radius: 2px;
+        left: 0;
+        background-color: white;
+        width: 22px;
+        height: 3px;
+
+        @include mq('500px') {
+          height: 2px;
+          background-color: black;
+        }
+      }
+
+      &:before {
+        top: 4px;
+      }
+
+      &:after {
+        bottom: 4px;
+      }
+
+      @include mq('800px') {
+        display: block;
+      }
+      
+      @include mq('500px') {
+        z-index: 1100;
+        background-color: black;
+      }
+
+    }
 
     p, li {
       color: white;
@@ -187,10 +242,17 @@ header {
           width: 24px;
         }
 
+      @include mq('500px') {
+        display: none;
       }
+    }
 
       &.settings {
         display: flex;
+
+        @include mq('500px') {
+          display: none;
+        }
         
         .settings__list {
           display: flex;
@@ -252,15 +314,28 @@ header {
   ============================================ */
 .sidebar {
   @include no-select();
-  width: 266px;
+  flex-basis: 200px;
   padding-top: 20px;
   padding-left: 25px;
   padding-right: 10px;
   border-right: $generic-border;
   background-color: #fafafa;
+  transition: all .2s;
 
-  @include mq('900px') {
-    display: none;
+  @include mq('800px') {
+    position: absolute;
+    z-index: 1000;
+    width: 170px;
+    left: -9999px;
+    height: 100vh;
+
+    &--show {
+      left: 0;
+    }
+  }
+
+  @include mq('500px') {
+    padding-top: 50px;
   }
 
   li {
@@ -460,6 +535,10 @@ header {
 .content {
   display: flex;
   flex-grow: 1;
+
+  @include mq('800px') {
+    overflow: hidden;
+  }  
 }
 
 /* Tasks
@@ -467,15 +546,26 @@ header {
 .tasks {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  flex-grow: 1;
   vertical-align: top;
   border-right: $generic-border;
   background-color: white;
   transition: width .3s ease;
-  
-  @include mq('900px') {
-    margin-left: 0;
-    width: auto;
+
+  &__background {
+    margin: auto;
+    background: #db4c3f;
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+    padding: 20px;
+    border-radius: 3px;
+
+
+    @include mq('400px') {
+      font-size: 16px;
+      padding: 15px;
+    }  
   }
 
   &__header {
@@ -484,15 +574,26 @@ header {
     background-color: #FAACA8;
     background-image: linear-gradient(19deg, #FAACA8 0%, #DDD6F3 100%);
     padding: 10px;
+    padding-top: 30px;
+    transition: all .2s;
+
+    @include mq('500px') {
+      align-items: flex-end;
+      height: 130px;
+      padding-left: 20px;
+    }
   }
 
   &__project-title {
     color: white;
+    margin: 0;
+    margin-bottom: 20px;
   }
 
   &__project-delete {
     margin-left: auto;
     margin-right: 15px;
+    margin-bottom: 20px;
     font-size: 15px;
     border: none;
     background-color: transparent;
@@ -513,32 +614,41 @@ header {
     margin-top: auto;
     padding: 10px 20px;
 
+    & label {
+      position: relative;
+    }
+
     & input {
-      width: 90%;
+      width: 100%;
       padding: 5px;
+      padding-right: 40px;
       font-size: 18px;
       border: none;
-      color: #db4c3f;
-      border-bottom: 1px solid #db4c3f;
+      color: #5c5f61;
+      border: 1px solid #5c5f61;
+      border-radius: 3px;
       background-color: transparent;
+      transition: all .2s ease;
     }
   }
 
   &__btn {
+    position: absolute;
+    top: 0;
+    right: 10px;
     font-size: 15px;
-    margin-left: 10px;
-    padding: 3px;
-    width: 60px;
-    color: white;
+    color: #5c5f61;
     border: none;
-    border-radius: 3px;
-    background-color: #db4c3f;
     cursor: pointer;
+    background-color: transparent;
     transition: all .3s ease;
+
+    &[disabled] {
+      opacity: 0;
+    }
 
     &:hover {
       color: #db4c3f;
-      background-color: white;  
     }
   }
 
@@ -601,9 +711,6 @@ header {
   }
 }
 
-.details ~ .tasks {
-  margin-right: 300px;
-}
 
 /* Add Task
   ============================================ */
@@ -940,17 +1047,13 @@ header {
 }
 
 .details {
-  padding: 60px 7px 20px;
-  background-color: #f1f1f1;
-  width: 300px;
-  margin-left: 5px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
-  &__group {
-
-  }
+  flex-basis: 200px;
+  padding: 60px 7px 20px;
+  background-color: #f5e8e8;
+  border-left: $generic-border;
 
   &__task {
     background-color: #fff;
@@ -994,6 +1097,29 @@ header {
 
   &__close:hover svg {
     fill: #db4c3f;
+  }
+
+  @include mq('500px') {
+    position: absolute;
+    z-index: 900;
+    width: 100%;
+    height: 100vh;
+    border: none;
+  
+    &__group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    &__task {
+      margin: auto;
+    }
+
+    &__btn {
+      width: 100px;
+      margin: auto;
+      margin-top: 5px;
+    }
   }
 }
 

@@ -29,6 +29,14 @@ const Content = () => {
 
       <div className="tasks">
         {
+          !projectsState.currentProject && (
+            <div className="tasks__background">
+              <p>Create new list and move to your dream</p>
+            </div>
+          )
+        }
+
+        {
           projectsState.currentProject && 
           projectsState.currentProject.projectId &&
           <TasksList />

@@ -4,6 +4,7 @@ import { Redirect } from 'react-router-dom';
 import Header from './components/layout/header';
 import Content from './components/layout/content';
 import { userContext } from './contexts/user-context';
+import { AppProvider } from './contexts/app-context';
 import { types } from './contexts/user-reducer';
 import useLocalStorage  from './hooks/use-local-storage';
 
@@ -34,10 +35,12 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <Header />
-      <Content />
-    </div>
+    <AppProvider>
+      <div className="App">
+        <Header />
+        <Content />
+      </div>
+    </AppProvider>
   );
 }
 
