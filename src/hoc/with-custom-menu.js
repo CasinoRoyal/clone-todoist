@@ -1,89 +1,75 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 
-import { renderList } from '../utils/render-list';
-import useFetch from '../hooks/use-fetch';
-import useTasks from '../hooks/use-tasks';
-import { types } from '../contexts/tasks-reducer';
-// import Spinner from '../components/layout/spinner';
+import ContextMenu from '../components/context-menu/context-menu';
 
-const ContextMenuItem = ({itemName, handleClick, id, children}) => (
-  <li className="ctx-menu__item" onClick={handleClick} data-id={id || null}>
-    {itemName}
-    {children}
-  </li>
-);
 
 const WithContextMenu = ({ listOfProjects = [], children }) => {
   const [show, setShow] = useState(false);
+  const [coor, setCoor] = useState({});
   const [taskId, setTaskId] = useState(null);
-  const [{response, isLoading}, doFetch] = useFetch('tasks/moveTask');
-  const { dispatch } = useTasks();
   const ctx = useRef();
-  const list = [
-    {name: 'Mark as completed'},
-    {name: 'Move to...', nestedList: [...listOfProjects]}, 
-    {name: 'Delete task'}
-  ];
 
-  const onContextMenu = useCallback((e) => {
+  const handleContextMenu = useCallback((e) => {
     e.preventDefault();
     if (listOfProjects.length <= 0) {
       return;
     }
+
+    if (show) {
+      return setShow(false)
+    }
+
     const li = e.target.closest('li');
 
     if (li) {
       setTaskId(li.dataset.taskid);
-    } else {
-      return;
-    }
+      setShow(true);
+      setCoor({
+        left: e.pageX,
+        top: e.pageY
+      })
+    } 
+  }, [listOfProjects, show]);
 
-    setShow(true);
-    const left = e.pageX;
-    const top = e.pageY;
-
-    ctx.current.firstElementChild.style.left = left + 'px';
-    ctx.current.firstElementChild.style.top = top + 'px';
-  }, [listOfProjects])
-
-  const onContextMenuClose = useCallback((e) => {
+  const handleContextMenuClose = useCallback((e) => {
     if (show) {
       setShow(false);
     }
-  }, [show])
+  }, [show]);
 
-  useEffect(() => {
-    if (response && !isLoading) {
-      dispatch({ type: types.PASS_TASK, payload: true });
+  const handleKeyDown = useCallback((e) => {
+    if (e.keyCode === 27 && show) {
+      handleContextMenuClose();
     }
-  }, [response, isLoading, dispatch]);
+  }, [show, handleContextMenuClose]);
 
   useEffect(() => {
-    ctx.current.addEventListener('contextmenu', onContextMenu);
-
-    return () => ctx.current.removeEventListener('contextmenu', onContextMenu);
-  }, [listOfProjects, onContextMenu]);
-
-  useEffect(() => {
-    document.addEventListener('click', onContextMenuClose);
-
-    return () => document.removeEventListener('click', onContextMenuClose);
-  }, [show, onContextMenuClose])
-
-  const handleClick = (e) => {
-    const projectId = e.target.dataset.id;
-    const options = {
-      projectId,
-      taskId
+    if (show) {
+      ctx.current.firstElementChild.style.left = coor.left + 'px';
+      ctx.current.firstElementChild.style.top = coor.top + 'px';
     }
-    doFetch(options, 'POST');
-  };
+  }, [show, coor, ctx])
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [handleKeyDown]);
 
   return(
-    <div ref={ctx} className="ctx-menu">
+    <div
+      ref={ctx}
+      className="ctx-menu"
+      onContextMenu={handleContextMenu}
+    >
       { 
         show && (listOfProjects.length > 0) && (
-          renderList(list, ContextMenuItem, handleClick)
+          <ContextMenu 
+            listOfProjects={listOfProjects} 
+            apiUrl='tasks/moveTask'
+            taskId={taskId}
+            onContextMenuClose={handleContextMenuClose}
+          />
         )
       }
       {children}

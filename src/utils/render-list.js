@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const renderList = (list, Component, fn) => {
+const renderList = (list, Component, fn) => {
   return (
     <ul className="ctx-menu__list">
       {
@@ -19,7 +19,6 @@ export const renderList = (list, Component, fn) => {
             )
           }
 
-
           return (
             <Component 
               key={item.name.length + Math.random() * 10} 
@@ -34,40 +33,4 @@ export const renderList = (list, Component, fn) => {
   )
 };
 
-        // <ul className="ctx-menu__list">
-        //   {
-        //     list.map((item) => {
-        //       if (item.nestedList) {
-        //        return (
-        //          <ContextMenuItem
-        //             key={item.length}
-        //             itemName={item.name} 
-        //             handleClick={(e)=> handleClick} 
-        //          >
-        //            <ul className="ctx-menu__list ctx-menu__list--insert">
-        //               {
-        //                 item.nestedList.map((nestedItem) => {
-        //                   return (
-        //                     <ContextMenuItem 
-        //                       key={nestedItem.length}
-        //                       itemName={nestedItem.name} 
-        //                       handleClick={(e) => handleClick} 
-        //                     />
-        //                   );
-        //                 })
-        //               }
-        //             </ul>
-        //          </ContextMenuItem>
-        //        )
-        //       }
-
-        //       return (
-        //         <ContextMenuItem 
-        //           key={item.length}
-        //           itemName={item.name} 
-        //           handleClick={(e)=> handleClick} 
-        //         />
-        //       );
-        //     })
-        //   }
-        // </ul>
+export default renderList;

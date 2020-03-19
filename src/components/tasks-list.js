@@ -8,6 +8,7 @@ import { types } from '../contexts/tasks-reducer';
 import Task from './task';
 import TaskHeader from './task-header';
 import WithCustomMenu from '../hoc/with-custom-menu';
+import transformList from '../utils/transform-list';
 import Spinner from './layout/spinner'
 
 const TasksList = () => {
@@ -72,9 +73,7 @@ const TasksList = () => {
     setIsFetch(true);
   }
 
-  const listOfProjects = projectsState.projects.map((project) => {
-    return { name: project.title, _id: project._id }
-  });
+  const listOfProjects = transformList(projectsState.projects);
 
   return(  
     <Fragment>
