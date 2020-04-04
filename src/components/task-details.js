@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaTimes } from 'react-icons/fa';
+import { FaTimes, FaTrash } from 'react-icons/fa';
 import moment from 'moment';
 
 import { types } from '../contexts/tasks-reducer';
@@ -84,6 +84,9 @@ const TaskDetails = () => {
           <FaTimes/>
         </button>
         <span>{`Created at: ${taskDateCreation}`}</span>
+        <button className="details__close" onClick={handleClose}>
+          <FaTrash />
+        </button>
       </footer>
     </aside>
   )

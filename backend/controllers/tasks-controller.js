@@ -73,8 +73,14 @@ exports.bindTaskToAnotherProject = async (req, res, next) => {
   }
 };
 
-exports.archiveTask = async (req, res, next) => {
-  const { _id } = req.body;
+exports.setFeature = async (req, res, next) => {
+  const { _id, typeFeature } = req.body;
+  let feature = 'isArchived';
+  
+  if (typeFeature === 'important') {
+    feature = 'isImportant';
+  }
+
   try {
     const task = await Task.findOne({ _id });
 
@@ -82,7 +88,7 @@ exports.archiveTask = async (req, res, next) => {
       return next(new AppError(404, 'Task not found'));
     }
 
-    task.isArchived = !task.isArchived;
+    task[feature] = !task[feature];
     await task.save();
     
     res.status(200).json({task})
@@ -90,7 +96,6 @@ exports.archiveTask = async (req, res, next) => {
       return next(new AppError(500, err));
   }
 };
-
 
 exports.updateTask = async (req, res, next) => {
   const { _id, taskBody } = req.body;

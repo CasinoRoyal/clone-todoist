@@ -23,11 +23,19 @@ const ProjectsList = () => {
 
   const handleProjectClick = (e) => {
     const projectId = e.currentTarget.dataset.projectid;
-    setActiveProjectId(projectId);
+    const [ project ] = state.projects.filter(({ _id }) => {
+      return projectId === _id
+    });
+
+    setActiveProjectId(project._id);
     setAppState({ isShowSidebar: false });
     dispatch({ 
       type: types.SET_PROJECT, 
-      payload: { projectId, title: e.currentTarget.textContent } 
+      payload: { 
+        projectId: project._id,
+        title: project.title,
+        deleteble: project.deleteble 
+      } 
     });
   };
 
@@ -83,8 +91,6 @@ const ProjectsList = () => {
           </ul>
         }
       </div>
-
-
     </Fragment>
   )
 };

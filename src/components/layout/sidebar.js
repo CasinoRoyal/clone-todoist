@@ -12,6 +12,7 @@ import { appContext } from '../../contexts/app-context';
 import useFetch from '../../hooks/use-fetch';
 import ProjectsList from '../projects-list';
 import Spinner from './spinner';
+import UserPanel from './user-panel';
 
 const Sidebar = () => {
   const [newTask, setNewTask] = useState(false);
@@ -118,6 +119,9 @@ const Sidebar = () => {
           {newTask ? 'Cancel' : '+'}
         </button>
       </div>
+      {
+        appState.isShowSidebar && <div className="user-panel"><UserPanel /></div>
+      }
     </aside>
   );
 };

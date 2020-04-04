@@ -10,14 +10,19 @@ const projectSchema = new mongoose.Schema({
       default: false
     },
     title: String,
+    deleteble: {
+      type: Boolean,
+      default: true
+    },
     tasks: [{ type: mongoose.Schema.ObjectId, ref: 'Task' }]  
   }]
 });
 
 projectSchema.statics.initBookmarks = function() {
    return bookmarksTitle.map(title => ({
-     title,
      isBookmark: true,
+     title,
+     deleteble: false,
      tasks: []
    }))
 };

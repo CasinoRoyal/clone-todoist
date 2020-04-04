@@ -83,6 +83,7 @@ const TasksList = () => {
       <TaskHeader 
         title={projectsState.currentProject.title} 
         id={projectsState.currentProject.projectId}
+        deleteble={projectsState.currentProject.deleteble}
       />
 
       <WithCustomMenu listOfProjects={listOfProjects}>

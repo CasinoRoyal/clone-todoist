@@ -1,20 +1,10 @@
 import React, { useContext } from 'react';
-import { FaPizzaSlice, FaDoorOpen, FaPlus } from 'react-icons/fa';
 
-import useLocalStorage from '../../hooks/use-local-storage';
-import { types } from '../../contexts/user-reducer';
-import { userContext } from '../../contexts/user-context'
+import UserPanel from './user-panel';
 import { appContext } from '../../contexts/app-context'
 
 const Header = () => {
-  const [,,removeValue] = useLocalStorage('token');
-  const { dispatch } = useContext(userContext);
-  const { setAppState } = useContext(appContext);
-
-  const handleLogoutClick = () => {
-    dispatch({type: types.LOGOUT_USER });
-    removeValue();
-  }
+  const { appState, setAppState } = useContext(appContext);
 
   const handleToggleHamburger = () => {
     setAppState((prevState) => ({
@@ -22,27 +12,19 @@ const Header = () => {
       isShowSidebar: !prevState.isShowSidebar
     }));
   }
+  
+  const hamburgerClassName = appState.isShowSidebar 
+    ? "hamburger hamburger--active" 
+    : "hamburger";
 
   return(
     <header className="header" data-testid="header">
       <nav className="nav">
-        <button className="hamburger" onClick={handleToggleHamburger}></button>
+        <button className={hamburgerClassName} onClick={handleToggleHamburger} />
         <div className="logo">
           <img src="/images/logo.png" alt="todoist-clone logo" />
         </div>
-        <div className="settings">
-          <ul className="settings__list">
-            <li className="settings__item" data-testid="quick-add-task-action">
-              <FaPlus />
-            </li>
-            <li className="settings__item" data-testid="dark-mode-action">
-              <FaPizzaSlice />
-            </li>
-          </ul>
-          <button className="settings__logout" onClick={handleLogoutClick}>
-            <FaDoorOpen />
-          </button>
-        </div>
+        <UserPanel />
       </nav>
     </header>
   );

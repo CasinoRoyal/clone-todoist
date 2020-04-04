@@ -7,7 +7,7 @@ import useFetch from '../hooks/use-fetch';
 import useProjects from '../hooks/use-projects';
 import { types } from '../contexts/project-reducer';
 
-const TaskHeader = ({ title, id }) => {
+const TaskHeader = ({ title, id, deleteble }) => {
   const [{ response, isLoading, error }, doFetch] = useFetch('projects');
   const { dispatch } = useProjects();
 
@@ -31,12 +31,16 @@ const TaskHeader = ({ title, id }) => {
     <div className="tasks__header">
       
       {isLoading && <Spinner />}
-      {error && !isLoading && <ErrorModal />}
+      {error && !isLoading && <ErrorModal errorMsg={error} />}
 
       <h2 className="tasks__project-title">{title}</h2>
-      <button className="tasks__project-delete" onClick={handleProjectDelete}>
-        <FaTrash/>
-      </button>
+      {
+        deleteble && (
+          <button className="tasks__project-delete" onClick={handleProjectDelete}>
+            <FaTrash/>
+          </button>
+        )
+      }
     </div>
   )
 }

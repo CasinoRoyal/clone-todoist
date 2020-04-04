@@ -3,7 +3,7 @@ const express = require('express');
 const protect = require('../middlewares/protect');
 const { 
   createTask, 
-  archiveTask, 
+  setFeature,
   getAllTaskFromProject,
   updateTask,
   deleteTask,
@@ -15,7 +15,7 @@ const router = express.Router();
 router
   .route('/')
   .post(protect, createTask)
-  .patch(protect, archiveTask)
+  .patch(protect, setFeature)
   .put(protect, updateTask)
   .delete(protect, deleteTask)
 

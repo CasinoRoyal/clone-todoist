@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { FaCheck } from 'react-icons/fa';
 
 import useFetch from '../../hooks/use-fetch';
 
-const Checkbox = ({ id, isChecked }) => {
+const Checkbox = ({ id, isChecked, icon, type }) => {
   const [,doFetch] = useFetch('tasks');
   const [isCheck, setIsCheck] = useState(isChecked); 
 
-  const archiveTask = async (id) => {
-    await doFetch({ _id: id }, 'PATCH');
+  const setFeature = async (id) => {
+    const options = { _id: id, typeFeature: type };
+
+    await doFetch(options, 'PATCH');
     setIsCheck((prevState) => !prevState);
   };
   const isActive = isCheck && 'checkbox--active';
@@ -18,10 +19,10 @@ const Checkbox = ({ id, isChecked }) => {
       className="checkbox-holder" 
       data-testid="checkbox-action"
 
-      onClick={() => archiveTask(id)}
+      onClick={() => setFeature(id)}
     >
       <span className={`checkbox ${isActive}`}>
-        {isCheck && <FaCheck />}
+        {isCheck && icon}
       </span>
     </div>
   );

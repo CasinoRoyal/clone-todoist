@@ -78,6 +78,7 @@ const Welcome = () => {
             type="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            placeholder="username"
             required
           />
          )}     
@@ -85,12 +86,14 @@ const Welcome = () => {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          placeholder="email"
           required
         />
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          placeholder="password"
           required
         />
         <button 

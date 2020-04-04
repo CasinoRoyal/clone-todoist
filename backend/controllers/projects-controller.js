@@ -58,6 +58,10 @@ exports.deleteProject = async (req, res, next) => {
     }
 
     const filtredProjects = projects.userProjects.filter((project) => {
+      if (!project.deleteble) {
+        return next(new AppError(403, 'Delete is not allowed'));
+      }
+
       return project._id != projectDeleteId;
     });
 
