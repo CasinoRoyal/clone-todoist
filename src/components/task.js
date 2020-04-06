@@ -7,7 +7,7 @@ import useTasks from "../hooks/use-tasks";
 // import useProjects from "../hooks/use-projects";
 // import transformList from "../utils/transform-list";
 
-const Task = ({ task, onDelete }) => {
+const Task = ({ task }) => {
   const [taskId, setTaskId] = useState(false);
   const { dispatch } = useTasks();
   // const { state: projectsState } = useProjects();
@@ -23,8 +23,14 @@ const Task = ({ task, onDelete }) => {
     dispatch({ type: types.SET_CURRENT_TASK, payload: task });
   };
 
+  // const handleTaskDelete = (_id) => {
+  //   dispatch({ type: types.DELETE_TASK });
+  //   fetchTask({ _id }, 'DELETE');
+  //   setIsFetch(true);
+  // }
+
   return (
-    <li className="task" data-taskid={task._id}>
+    <li draggable className="task" data-taskid={task._id}>
       <Checkbox
         id={task._id}
         isChecked={task.isArchived}

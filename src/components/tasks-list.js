@@ -1,27 +1,21 @@
-import React, { Fragment, useState, useEffect } from 'react';
-import { FaPaperPlane } from 'react-icons/fa';
+import React, { Fragment, useState, useEffect, useCallback } from 'react';
 
 import useFetch from '../hooks/use-fetch';
 import useProjects from '../hooks/use-projects';
 import useTasks from '../hooks/use-tasks';
 import { types } from '../contexts/tasks-reducer';
-import Task from './task';
-import TaskHeader from './task-header';
 import WithCustomMenu from '../hoc/with-custom-menu';
 import transformList from '../utils/transform-list';
 import Spinner from './layout/spinner'
+import Task from './task';
+import TaskHeader from './task-header';
+import TaskFooter from './task-footer';
 
 const TasksList = () => {
-  const [task, setTask] = useState('');
   const [isFetch, setIsFetch] = useState(true);
   const { state: tasksState, dispatch } = useTasks();
   const { state: projectsState } = useProjects();
   const url = projectsState.currentProject.projectId;
-  const [
-    { response: responseAddTask, isLoading: isLoadingAddTask }, 
-    fetchTask
-  ] = useFetch('tasks');
-  
   const [
     { response: responseAllTasks, isLoading: isLoadingAllTasks }, 
     fetchAllTasks
@@ -50,34 +44,14 @@ const TasksList = () => {
     }
   }, [responseAllTasks, dispatch])
 
-  useEffect(() => {
-    if (responseAddTask && !isLoadingAddTask) {
-      dispatch({ type: types.ADD_TASK });
-      setTask('');
-      setIsFetch(true);
-    }
-  }, [responseAddTask, isLoadingAddTask, dispatch]);
-
-  const handleAddTask = () => {
-    const options = {
-      projectId: projectsState.currentProject.projectId,
-      task
-    }
-
-    fetchTask(options, 'POST');
-  };
-
-  const handleTaskDelete = (_id) => {
-    dispatch({ type: types.DELETE_TASK });
-    fetchTask({ _id }, 'DELETE');
-    setIsFetch(true);
-  }
+  const handleIsFetch = useCallback((value) => {
+    setIsFetch(value);
+  }, []);
 
   const listOfProjects = transformList(projectsState.projects);
 
   return(  
-    <Fragment>
-      
+    <Fragment>      
       { (isLoadingAllTasks || tasksState.passTask) && <Spinner /> }
 
       <TaskHeader 
@@ -96,24 +70,12 @@ const TasksList = () => {
             )}
             
             {tasksState.tasks.map(task => {
-              return <Task key={task._id} task={task} onDelete={handleTaskDelete} />        
+              return <Task key={task._id} task={task} />        
             })}
         </ul>
       </WithCustomMenu>
 
-      <div className="tasks__footer">
-        <label>
-          <input 
-            type="text" 
-            value={task} 
-            onChange={(e) => setTask(e.target.value)}
-            placeholder="Add task"
-          />
-          <button disabled={!task} className="tasks__btn" onClick={handleAddTask}>
-            <FaPaperPlane />
-          </button>
-        </label>
-      </div>
+      <TaskFooter handleIsFetch={handleIsFetch} />
     </Fragment>
   );
 };
