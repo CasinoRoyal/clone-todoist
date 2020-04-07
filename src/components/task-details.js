@@ -13,7 +13,7 @@ const TaskDetails = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [, doFetch] = useFetch('tasks');
   const taskDateCreation = moment(state.currentTask.createdAt).format('DD-MM-YY');
-
+  console.log(state)
   useEffect(() => {
     setTaskBody(state.currentTask.body);
     setCacheTaskBody(state.currentTask.body);
@@ -54,6 +54,12 @@ const TaskDetails = () => {
     }
   }
 
+  const handleTaskDelete = () => {
+    dispatch({ type: types.DELETE_TASK, payload: state.currentTask._id });
+    doFetch({ _id: state.currentTask._id }, 'DELETE');
+    dispatch({ type: types.SET_CURRENT_TASK, payload: null });
+  }
+
   return(
     <aside className="details">
       <div className="details__group">
@@ -83,8 +89,10 @@ const TaskDetails = () => {
         <button className="details__close" onClick={handleClose}>
           <FaTimes/>
         </button>
+
         <span>{`Created at: ${taskDateCreation}`}</span>
-        <button className="details__close" onClick={handleClose}>
+
+        <button className="details__delete" onClick={handleTaskDelete}>
           <FaTrash />
         </button>
       </footer>

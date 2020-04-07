@@ -25,8 +25,14 @@ export const reducer = (state = initialState, action) => {
       }
  
     case types.ADD_TASK:
-    case types.DELETE_TASK:
       return { ...state }
+    
+    case types.DELETE_TASK:
+      const newTasks = state.tasks.filter(task => task._id !== action.payload);
+      return {
+        ...state,
+        tasks: newTasks
+      }
 
     case types.TOGGLE_EDIT_TASK:
       return { 

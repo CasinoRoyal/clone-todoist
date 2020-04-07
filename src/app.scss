@@ -1112,19 +1112,25 @@ header {
     }
   }
 
-  &__close {
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  &__close,
+  &__delete {
     border: none;
     width: 25px;
     height: 25px;
-    padding: 0;
-    margin-right: 10px;
     font-size: 20px;
     vertical-align: middle;
     background-color: transparent;
     cursor: pointer;
   }
 
-  &__close:hover svg {
+  &__close:hover svg,
+  &__delete:hover svg {
     fill: #db4c3f;
   }
 
@@ -1290,6 +1296,7 @@ header {
 }
 
 .settings__logout {
+  padding: 5px;
   border: none;
   background-color: transparent;
   font-size: 20px;
