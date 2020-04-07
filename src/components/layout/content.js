@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 
 import Sidebar from './sidebar';
-import TasksList from '../tasks-list';
+import Main from './main';
 import TaskDetails from '../task-details';
 import useProjects from '../../hooks/use-projects';
 import useTasks from '../../hooks/use-tasks';
@@ -39,7 +39,7 @@ const Content = () => {
         {
           projectsState.currentProject && 
           projectsState.currentProject.projectId &&
-          <TasksList />
+          <Main />
         }
       </div>
 

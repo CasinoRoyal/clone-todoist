@@ -1,5 +1,6 @@
-import React, { Fragment, useState, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
+import Task from './task';
 import useFetch from '../hooks/use-fetch';
 import useProjects from '../hooks/use-projects';
 import useTasks from '../hooks/use-tasks';
@@ -7,76 +8,77 @@ import { types } from '../contexts/tasks-reducer';
 import WithCustomMenu from '../hoc/with-custom-menu';
 import transformList from '../utils/transform-list';
 import Spinner from './layout/spinner'
-import Task from './task';
-import TaskHeader from './task-header';
-import TaskFooter from './task-footer';
 
 const TasksList = () => {
+  const [tasks, setTasks] = useState([]);
+  const [dragging, setIsDragging] = useState(false);
   const [isFetch, setIsFetch] = useState(true);
   const { state: tasksState, dispatch } = useTasks();
   const { state: projectsState } = useProjects();
-  const url = projectsState.currentProject.projectId;
-  const [
-    { response: responseAllTasks, isLoading: isLoadingAllTasks }, 
-    fetchAllTasks
-  ] = useFetch(`tasks/${url}`);
-
-  useEffect(() => {
-    if (tasksState.passTask) {
-      dispatch({ type: types.PASS_TASK, payload: false })
-    }
-  }, [tasksState.passTask, dispatch])
-
-  useEffect(() => {
-    fetchAllTasks(null, 'GET');
-    setIsFetch(false);
-  }, [
-    fetchAllTasks, 
-    isFetch, 
-    tasksState.passTask, 
-    tasksState.isEditTask, 
-    projectsState.currentProject
-  ]);
-
-  useEffect(() => {
-    if (responseAllTasks) {
-      dispatch({ type: types.GET_TASKS, payload: responseAllTasks.tasks })
-    }
-  }, [responseAllTasks, dispatch])
-
-  const handleIsFetch = useCallback((value) => {
-    setIsFetch(value);
-  }, []);
-
   const listOfProjects = transformList(projectsState.projects);
+  let dragItem = useRef();
+  let dragNode = useRef();
+  let enteredTaskIndex = useRef();
+
+  useEffect(() => {
+    setTasks(tasksState.tasks)
+  }, [tasksState]);
+
+  const handleDragStart = (e, taskOptions) => {
+    dragNode.current = e.target;
+    dragNode.current.addEventListener('dragend', handleDragEnd);
+
+    dragItem.current = taskOptions;
+  }
+
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+
+    if (e.currentTarget === dragNode.current) return;
+
+    const indexEnterTask = tasks.findIndex(task => {
+      return task._id === e.currentTarget.dataset.taskid
+    });
+    enteredTaskIndex.current = indexEnterTask;
+  }
+
+  const handleDragEnd = () => {
+    const copyTasks = [...tasks];
+    const dragIdx = dragItem.current.taskIndex;
+    const enteredIdx = enteredTaskIndex.current;
+    const insertTask = copyTasks.splice(dragIdx, 1)[0];
+    copyTasks.splice(enteredIdx, 0, insertTask);
+
+    dragNode.current.removeEventListener('dragend', handleDragEnd);
+    dragNode.current = null;
+    dragItem.current = null;
+    setTasks(prevState => [...copyTasks]);
+  }
 
   return(  
-    <Fragment>      
-      { (isLoadingAllTasks || tasksState.passTask) && <Spinner /> }
-
-      <TaskHeader 
-        title={projectsState.currentProject.title} 
-        id={projectsState.currentProject.projectId}
-        deleteble={projectsState.currentProject.deleteble}
-      />
-
-      <WithCustomMenu listOfProjects={listOfProjects}>
-        <ul className='tasks__list'>
-            {!tasksState.tasks.length && (
-              <h2 className="no-task">
-                Oh, no! Empty list
-                <span role="img" aria-label="upset">😦😦</span>
-              </h2>
-            )}
-            
-            {tasksState.tasks.map(task => {
-              return <Task key={task._id} task={task} />        
-            })}
-        </ul>
-      </WithCustomMenu>
-
-      <TaskFooter handleIsFetch={handleIsFetch} />
-    </Fragment>
+    <WithCustomMenu listOfProjects={listOfProjects}>
+      <ul className='tasks__list'>
+          {!tasks.length && (
+            <h2 className="no-task">
+              Oh, no! Empty list
+              <span role="img" aria-label="upset">😦😦</span>
+            </h2>
+          )}
+          
+          {tasks.map((task, idx) => {
+            return (
+              <Task 
+                key={task._id} 
+                task={task}
+                taskIndex={idx}
+                handleDragStart={handleDragStart}
+                handleDragEnter={handleDragEnter}
+                handleDragEnd={handleDragEnd}
+              />
+            )       
+          })}
+      </ul>
+    </WithCustomMenu>
   );
 };
 

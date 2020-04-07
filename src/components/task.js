@@ -7,7 +7,7 @@ import useTasks from "../hooks/use-tasks";
 // import useProjects from "../hooks/use-projects";
 // import transformList from "../utils/transform-list";
 
-const Task = ({ task }) => {
+const Task = ({ task, taskIndex, handleDragStart, handleDragEnter}) => {
   const [taskId, setTaskId] = useState(false);
   const { dispatch } = useTasks();
   // const { state: projectsState } = useProjects();
@@ -30,7 +30,14 @@ const Task = ({ task }) => {
   // }
 
   return (
-    <li draggable className="task" data-taskid={task._id}>
+    <li 
+      className="task" 
+      data-taskid={task._id}
+      draggable 
+      onDragStart={(e) => handleDragStart(e, {task, taskIndex})}
+      onDragEnter={(e) => handleDragEnter(e)}
+      onDragOver={(e) => e.preventDefault()}
+    >
       <Checkbox
         id={task._id}
         isChecked={task.isArchived}
